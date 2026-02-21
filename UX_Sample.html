@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Keepin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const C = {
+  bg: "#F7F5FF", white: "#FFFFFF", primary: "#6D28D9", primaryLight: "#EDE9FE",
+  accent: "#EA580C", accentLight: "#FFF7ED", gold: "#D97706", goldLight: "#FFFBEB",
+  text: "#1C1917", sub: "#78716C", border: "#E7E5E4", success: "#059669", successLight: "#ECFDF5",
+};
+
+const Ic = ({ n, s = 20, c = C.primary }) => {
+  const d = {
+    home: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>,
+    scan: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="17" y2="14"/><line x1="20" y1="14" x2="20" y2="14"/><line x1="14" y1="17" x2="14" y2="20"/><line x1="17" y1="20" x2="20" y2="20"/><line x1="20" y1="17" x2="20" y2="20"/></svg>,
+    search: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    camera: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+    box: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
+    chevron: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="9,18 15,12 9,6"/></svg>,
+    back: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="15,18 9,12 15,6"/></svg>,
+    check: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="20,6 9,17 4,12"/></svg>,
+    lock: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+    key: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>,
+    user: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    plus: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    sparkle: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>,
+    mic: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
+    edit: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+    tag: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
+    bell: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+    location: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+    info: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+    trash: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+    star: <svg width={s} height={s} viewBox="0 0 24 24" fill={c} stroke={c} strokeWidth="1.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>,
+  };
+  return d[n] || null;
+};
+
+const pill = (label, type = "free") => {
+  const styles = { free: { bg: C.successLight, color: C.success, border: "#A7F3D0" }, pro: { bg: C.goldLight, color: C.gold, border: "#FDE68A" } };
+  const s = styles[type];
+  return <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20 }}>{label}</span>;
+};
+
+const Btn = ({ label, onClick, variant = "primary", full = false, icon, small = false }) => {
+  const styles = { primary: { bg: C.primary, color: "#fff", border: "none" }, accent: { bg: C.accent, color: "#fff", border: "none" }, outline: { bg: "transparent", color: C.primary, border: `1.5px solid ${C.primary}` }, ghost: { bg: C.primaryLight, color: C.primary, border: "none" }, gold: { bg: "#D97706", color: "#fff", border: "none" } };
+  const s = styles[variant];
+  return <button onClick={onClick} style={{ background: s.bg, color: s.color, border: s.border, borderRadius: 14, padding: small ? "9px 16px" : "13px 20px", fontWeight: 700, fontSize: small ? 13 : 15, cursor: "pointer", width: full ? "100%" : "auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "inherit" }}>{icon && icon}{label}</button>;
+};
+
+const Onboarding = ({ onDone }) => {
+  const [step, setStep] = useState(0);
+  const steps = [
+    { emoji: "📦", title: "Never lose anything again", body: "Keepin tracks everything you own — by box, shelf, room, or bag. Find anything in seconds.", cta: "Let's go" },
+    { emoji: "🏷️", title: "Your QR tag creates a container", body: "Stick a Keepin QR tag on any box or drawer. Scan it in the app and a tracked container is created instantly.", cta: "Got it" },
+    { emoji: "📸", title: "Add items by photo", body: "Take a photo of what's inside, type the name, and it's saved. Premium users get AI auto-detection — no typing needed.", cta: "Got it" },
+    { emoji: "🔍", title: "Search to find anything", body: "Type any item name and see exactly which container it's in. Premium unlocks smart search by occasion, weather, or purpose.", cta: "Start organising" },
+  ];
+  const s = steps[step];
+  const isLast = step === steps.length - 1;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: C.white }}>
+      <div style={{ display: "flex", gap: 6, padding: "20px 24px 0" }}>
+        {steps.map((_, i) => <div key={i} style={{ flex: 1, height: 4, borderRadius: 4, background: i <= step ? C.primary : C.border, transition: "background 0.3s" }} />)}
+      </div>
+      <div style={{ textAlign: "right", padding: "8px 24px 0" }}>
+        <button onClick={onDone} style={{ background: "none", border: "none", color: C.sub, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Skip</button>
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 32px 40px", textAlign: "center" }}>
+        <div style={{ fontSize: 80, marginBottom: 28, lineHeight: 1 }}>{s.emoji}</div>
+        <div style={{ fontWeight: 800, fontSize: 24, color: C.text, marginBottom: 14, lineHeight: 1.3 }}>{s.title}</div>
+        <div style={{ color: C.sub, fontSize: 15, lineHeight: 1.7, marginBottom: 40 }}>{s.body}</div>
+        <Btn full label={s.cta} onClick={() => isLast ? onDone() : setStep(p => p + 1)} />
+        {!isLast && <button onClick={onDone} style={{ background: "none", border: "none", color: C.sub, fontSize: 13, cursor: "pointer", marginTop: 16, fontFamily: "inherit" }}>Skip intro</button>}
+      </div>
+    </div>
+  );
+};
+
+const Home = ({ isPremium, nav, items, containers }) => {
+  const isEmpty = items.length === 0;
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0 8px" }}>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Hello, Sneha 👋</div>
+          <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>{isEmpty ? "Let's start organising" : `${items.length} item${items.length !== 1 ? "s" : ""} tracked`}</div>
+        </div>
+        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 14, padding: 10, cursor: "pointer" }}><Ic n="user" s={20} c={C.primary} /></button>
+      </div>
+      {isPremium && (
+        <div style={{ background: "linear-gradient(135deg, #6D28D9, #EA580C)", borderRadius: 14, padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>✦ Premium Active</div>
+          <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>AI features unlocked</div>
+        </div>
+      )}
+      {isEmpty && !isPremium && (
+        <div style={{ background: "linear-gradient(135deg, #EDE9FE, #FFF7ED)", border: `1.5px solid #DDD6FE`, borderRadius: 18, padding: 20, marginBottom: 20 }}>
+          <div style={{ fontWeight: 700, fontSize: 15, color: C.primary, marginBottom: 12 }}>📋 How Keepin works</div>
+          {[{ step: "1", text: "Scan a QR tag or create a digital container" }, { step: "2", text: "Add items inside by photo + name" }, { step: "3", text: "Search any item to find it instantly" }].map(s => (
+            <div key={s.step} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+              <div style={{ width: 26, height: 26, background: C.primary, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#fff", fontWeight: 800, fontSize: 12 }}>{s.step}</div>
+              <div style={{ color: C.text, fontSize: 13, lineHeight: 1.5, paddingTop: 4 }}>{s.text}</div>
+            </div>
+          ))}
+          <Btn full label="Create my first container →" onClick={() => nav("organize")} />
+        </div>
+      )}
+      {!isEmpty && (
+        <>
+          <button onClick={() => nav("search")} style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: "13px 16px", display: "flex", alignItems: "center", gap: 10, marginBottom: 16, cursor: "pointer", boxSizing: "border-box" }}>
+            <Ic n="search" s={18} c={C.sub} /><span style={{ color: C.sub, fontSize: 14 }}>Search your items…</span>
+          </button>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+            {[{ v: 2, l: "Locations", i: "location" }, { v: containers.length, l: "Containers", i: "box" }, { v: items.length, l: "Items", i: "tag" }].map(s => (
+              <div key={s.l} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 8px", textAlign: "center" }}>
+                <div style={{ marginBottom: 4 }}><Ic n={s.i} s={16} c={C.primary} /></div>
+                <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>{s.v}</div>
+                <div style={{ fontSize: 11, color: C.sub }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+        <button onClick={() => nav("organize")} style={{ background: C.primaryLight, border: "none", borderRadius: 18, padding: "20px 16px", textAlign: "left", cursor: "pointer" }}>
+          <div style={{ width: 40, height: 40, background: C.primary, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Ic n="scan" s={22} c="#fff" /></div>
+          <div style={{ fontWeight: 800, fontSize: 15, color: C.primary }}>Organise</div>
+          <div style={{ fontSize: 12, color: "#5B21B6", marginTop: 4, lineHeight: 1.4 }}>Add containers & items</div>
+        </button>
+        <button onClick={() => isPremium ? nav("ask") : nav("unlock")} style={{ background: isPremium ? "#FFF7ED" : "#F5F5F5", border: isPremium ? "none" : `1.5px dashed ${C.border}`, borderRadius: 18, padding: "20px 16px", textAlign: "left", cursor: "pointer", position: "relative" }}>
+          {!isPremium && <div style={{ position: "absolute", top: 10, right: 10, background: C.goldLight, border: `1px solid #FDE68A`, borderRadius: 20, padding: "2px 7px", fontSize: 10, fontWeight: 700, color: C.gold }}>PREMIUM</div>}
+          <div style={{ width: 40, height: 40, background: isPremium ? C.accent : "#E5E7EB", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Ic n="mic" s={22} c={isPremium ? "#fff" : C.sub} /></div>
+          <div style={{ fontWeight: 800, fontSize: 15, color: isPremium ? C.accent : C.sub }}>Ask</div>
+          <div style={{ fontSize: 12, color: isPremium ? "#92400E" : C.sub, marginTop: 4, lineHeight: 1.4 }}>{isPremium ? '"Where are my winter clothes?"' : "Voice & smart search"}</div>
+        </button>
+      </div>
+      {!isEmpty && (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>Recently Added</div>
+            <button onClick={() => nav("search")} style={{ background: "none", border: "none", color: C.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>View all →</button>
+          </div>
+          {items.slice(-2).reverse().map((item, i) => (
+            <div key={i} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <div style={{ width: 48, height: 48, background: "#F3F4F6", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{item.emoji}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{item.name}</div>
+                <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📦 {item.container} · 📍 {item.location}</div>
+              </div>
+              <Ic n="chevron" s={16} c={C.sub} />
+            </div>
+          ))}
+        </>
+      )}
+      {!isPremium && (
+        <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <button onClick={() => nav("gettags")} style={{ background: "linear-gradient(135deg, #6D28D9, #4C1D95)", border: "none", borderRadius: 16, padding: "14px 14px", cursor: "pointer", textAlign: "left", boxSizing: "border-box" }}>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>🏷️ Get QR Tags</div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, marginTop: 3, lineHeight: 1.4 }}>Buy on Amazon, comes with Premium</div>
+          </button>
+          <button onClick={() => nav("redeem")} style={{ background: "linear-gradient(135deg, #EA580C, #C2410C)", border: "none", borderRadius: 16, padding: "14px 14px", cursor: "pointer", textAlign: "left", boxSizing: "border-box" }}>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>🔑 Redeem Code</div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, marginTop: 3, lineHeight: 1.4 }}>Have a pack already? Enter code</div>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Organise = ({ nav, isPremium, containers, setContainers, items, setItems }) => {
+  const [view, setView] = useState("main");
+  const [selectedContainer, setSelectedContainer] = useState(null);
+  const [itemName, setItemName] = useState("");
+  const [itemEmoji, setItemEmoji] = useState("📦");
+  const [aiLoading, setAiLoading] = useState(false);
+  const emojis = ["📦", "🖊️", "👕", "📚", "🔧", "💊", "🎮", "👟", "🧴", "🍽️", "📷", "🧸"];
+  const saveItem = () => { if (!itemName.trim() || !selectedContainer) return; setItems(p => [...p, { name: itemName, emoji: itemEmoji, container: selectedContainer, location: "Home" }]); setItemName(""); setItemEmoji("📦"); setView("main"); };
+  const fakeAI = () => { setAiLoading(true); setTimeout(() => { setItemName("Blue Pen"); setItemEmoji("🖊️"); setAiLoading(false); }, 1400); };
+
+  if (view === "addItem") return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={() => setView("main")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
+        <div><div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Add Item</div><div style={{ fontSize: 12, color: C.sub }}>to "{selectedContainer}"</div></div>
+      </div>
+      <div style={{ background: "#F3F4F6", borderRadius: 16, height: 180, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 16, border: `2px dashed ${C.border}` }}>
+        <Ic n="camera" s={32} c={C.sub} />
+        <div style={{ color: C.sub, fontSize: 14, fontWeight: 600 }}>Tap to take photo</div>
+        <div style={{ color: C.sub, fontSize: 12 }}>or choose from library</div>
+      </div>
+      <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: C.text, marginBottom: 12 }}>How do you want to name this item?</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+          <button onClick={() => isPremium ? fakeAI() : nav("unlock")} style={{ background: isPremium ? C.goldLight : "#F9FAFB", border: isPremium ? "1.5px solid #FDE68A" : `1.5px dashed ${C.border}`, borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center", position: "relative" }}>
+            {!isPremium && <div style={{ position: "absolute", top: -6, right: -6, background: C.gold, borderRadius: 12, padding: "2px 7px", fontSize: 9, fontWeight: 700, color: "#fff" }}>🔒 PRO</div>}
+            <div style={{ fontSize: 24, marginBottom: 6 }}>{aiLoading ? "⏳" : "✨"}</div>
+            <div style={{ fontWeight: 700, fontSize: 13, color: isPremium ? C.gold : C.sub }}>AI Identify</div>
+            <div style={{ fontSize: 11, color: isPremium ? "#92400E" : C.sub, marginTop: 3 }}>{aiLoading ? "Detecting…" : "Auto from photo"}</div>
+          </button>
+          <button style={{ background: C.primaryLight, border: "none", borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center" }}>
+            <div style={{ fontSize: 24, marginBottom: 6 }}>✏️</div>
+            <div style={{ fontWeight: 700, fontSize: 13, color: C.primary }}>Type Name</div>
+            <div style={{ fontSize: 11, color: "#5B21B6", marginTop: 3 }}>Always free</div>
+          </button>
+        </div>
+        <input value={itemName} onChange={e => setItemName(e.target.value)} placeholder="Item name (e.g. Blue Pen)" style={{ width: "100%", border: `1.5px solid ${itemName ? C.primary : C.border}`, borderRadius: 12, padding: "12px 14px", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 12 }} />
+        <div style={{ fontSize: 12, color: C.sub, marginBottom: 8, fontWeight: 600 }}>Pick an icon</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {emojis.map(e => <button key={e} onClick={() => setItemEmoji(e)} style={{ width: 36, height: 36, background: e === itemEmoji ? C.primaryLight : "#F9FAFB", border: e === itemEmoji ? `1.5px solid ${C.primary}` : `1px solid ${C.border}`, borderRadius: 10, fontSize: 18, cursor: "pointer" }}>{e}</button>)}
+        </div>
+      </div>
+      <Btn full label="Save Item" onClick={saveItem} variant={itemName ? "primary" : "outline"} />
+    </div>
+  );
+
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 4px" }}>
+        <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Organise</div>
+        <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>Add containers, then add items inside them</div>
+      </div>
+      {containers.length === 0 && (
+        <div style={{ background: C.primaryLight, borderRadius: 14, padding: "12px 16px", marginTop: 12, marginBottom: 0, display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <Ic n="info" s={18} c={C.primary} />
+          <div style={{ fontSize: 13, color: "#4C1D95", lineHeight: 1.5 }}><strong>First:</strong> Create a container (a box, shelf, or drawer). Then add items inside it.</div>
+        </div>
+      )}
+      <div style={{ marginTop: 20, marginBottom: 8 }}>
+        <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 12 }}>Step 1 — Create a Container</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+          <button style={{ background: C.primaryLight, border: "none", borderRadius: 14, padding: 16, cursor: "pointer", textAlign: "center" }}>
+            <div style={{ fontSize: 28, marginBottom: 8 }}>📷</div>
+            <div style={{ fontWeight: 700, fontSize: 13, color: C.primary }}>Scan QR Tag</div>
+            <div style={{ fontSize: 11, color: "#5B21B6", marginTop: 4, lineHeight: 1.4 }}>Attach tag to a box, then scan</div>
+          </button>
+          <button onClick={() => setContainers(p => [...p, `Container ${p.length + 1}`])} style={{ background: "#F9FAFB", border: `1.5px dashed ${C.border}`, borderRadius: 14, padding: 16, cursor: "pointer", textAlign: "center" }}>
+            <div style={{ fontSize: 28, marginBottom: 8 }}>📁</div>
+            <div style={{ fontWeight: 700, fontSize: 13, color: C.text }}>Digital Container</div>
+            <div style={{ fontSize: 11, color: C.sub, marginTop: 4, lineHeight: 1.4 }}>No QR tag needed</div>
+          </button>
+        </div>
+      </div>
+      {containers.length > 0 && (
+        <>
+          <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 10, marginTop: 4 }}>Step 2 — Add Items to a Container</div>
+          <div style={{ fontSize: 12, color: C.sub, marginBottom: 12 }}>Tap a container to add items inside it</div>
+          {containers.map((c, i) => {
+            const count = items.filter(it => it.container === c).length;
+            return (
+              <button key={i} onClick={() => { setSelectedContainer(c); setView("addItem"); }} style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8, cursor: "pointer", boxSizing: "border-box" }}>
+                <div style={{ width: 40, height: 40, background: C.primaryLight, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n="box" s={20} c={C.primary} /></div>
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{c}</div>
+                  <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{count} item{count !== 1 ? "s" : ""} · Digital</div>
+                </div>
+                <div style={{ background: C.accent, color: "#fff", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700 }}>+ Add Item</div>
+              </button>
+            );
+          })}
+        </>
+      )}
+    </div>
+  );
+};
+
+const Search = ({ nav, isPremium, items }) => {
+  const [q, setQ] = useState("");
+  const results = q.trim() ? items.filter(it => it.name.toLowerCase().includes(q.toLowerCase())) : [];
+  const tags = ["🎄 Holiday", "✈️ Travel", "🌧️ Rainy Day", "🎉 Party", "🏕️ Camping"];
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 16px" }}>
+        <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Find Anything</div>
+        <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>Search by item name or occasion</div>
+      </div>
+      <div style={{ flex: 1, position: "relative", marginBottom: 20 }}>
+        <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}><Ic n="search" s={18} c={C.sub} /></div>
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="e.g. blue pen, charger…" style={{ width: "100%", border: `1.5px solid ${q ? C.primary : C.border}`, borderRadius: 12, padding: "12px 16px 12px 38px", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+      </div>
+      {q && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>Results</div>{pill("Free", "free")}
+          </div>
+          {results.length === 0 ? (
+            <div style={{ background: "#F9FAFB", borderRadius: 14, padding: "24px 16px", textAlign: "center" }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>🤷</div>
+              <div style={{ color: C.sub, fontSize: 14 }}>No items found for "{q}"</div>
+            </div>
+          ) : results.map((it, i) => (
+            <div key={i} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <div style={{ width: 44, height: 44, background: "#F3F4F6", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{it.emoji}</div>
+              <div><div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{it.name}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📦 {it.container} · 📍 {it.location}</div></div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ background: isPremium ? C.goldLight : "#F9FAFB", border: isPremium ? `1.5px solid #FDE68A` : `1.5px dashed ${C.border}`, borderRadius: 16, padding: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: isPremium ? C.gold : C.sub }}>Smart Search by Occasion</div>{pill("✦ Premium", "pro")}
+        </div>
+        <div style={{ fontSize: 12, color: isPremium ? "#92400E" : C.sub, marginBottom: 12, lineHeight: 1.5 }}>{isPremium ? "Search by event, weather, or purpose — not just item names." : "Upgrade to search by context, not just names."}</div>
+        {isPremium ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {tags.map(t => <button key={t} style={{ background: "#FEF3C7", color: "#92400E", border: "none", borderRadius: 20, padding: "6px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>{t}</button>)}
+          </div>
+        ) : (
+          <>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, opacity: 0.4, marginBottom: 14 }}>
+              {tags.map(t => <div key={t} style={{ background: "#E5E7EB", color: C.sub, borderRadius: 20, padding: "6px 12px", fontSize: 13, fontWeight: 600 }}>{t}</div>)}
+            </div>
+            <button onClick={() => nav("unlock")} style={{ width: "100%", background: C.gold, color: "#fff", border: "none", borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Unlock Smart Search →</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const GetTags = ({ nav }) => {
+  const packs = [
+    { name: "Starter Pack", qty: "10 QR Tags", price: "$19.99", bonus: "1 week Premium included", best: false, emoji: "📦" },
+    { name: "Mover Pack", qty: "30 QR Tags", price: "$39.99", bonus: "3 weeks Premium included", best: true, emoji: "🚚" },
+    { name: "Home Pack", qty: "60 QR Tags", price: "$59.99", bonus: "6 weeks Premium included", best: false, emoji: "🏠" },
+  ];
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 4px", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={() => nav("home")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
+        <div><div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Get QR Tag Packs</div><div style={{ fontSize: 12, color: C.sub }}>Physical tags — sold on Amazon</div></div>
+      </div>
+      <div style={{ background: "linear-gradient(135deg, #EDE9FE, #FFF7ED)", borderRadius: 18, padding: 20, marginTop: 12, marginBottom: 20 }}>
+        <div style={{ fontWeight: 700, fontSize: 15, color: C.primary, marginBottom: 10 }}>What are Keepin QR Tags?</div>
+        {[{ e: "🏷️", t: "Small sticker tags you attach to any box, drawer, shelf, or bag" }, { e: "📱", t: "Scan a tag in the app to instantly create a tracked container" }, { e: "✨", t: "Every pack includes a Premium code for free AI features" }, { e: "♾️", t: "Your items stay saved forever — even after Premium ends" }].map((s, i) => (
+          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
+            <span style={{ fontSize: 18, flexShrink: 0 }}>{s.e}</span>
+            <span style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{s.t}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 12 }}>Choose a Pack</div>
+      {packs.map((p, i) => (
+        <div key={i} style={{ background: C.white, border: `${p.best ? "2px" : "1.5px"} solid ${p.best ? C.primary : C.border}`, borderRadius: 16, padding: 16, marginBottom: 12, position: "relative" }}>
+          {p.best && <div style={{ position: "absolute", top: -10, left: 16, background: C.primary, color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 12px", borderRadius: 20 }}>Most Popular</div>}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <span style={{ fontSize: 26 }}>{p.emoji}</span>
+              <div><div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>{p.name}</div><div style={{ fontSize: 13, color: C.sub }}>{p.qty}</div></div>
+            </div>
+            <div style={{ fontWeight: 800, fontSize: 18, color: C.primary }}>{p.price}</div>
+          </div>
+          <div style={{ background: C.goldLight, border: "1px solid #FDE68A", borderRadius: 10, padding: "7px 12px", fontSize: 12, color: C.gold, fontWeight: 600, marginBottom: 12 }}>🎁 {p.bonus}</div>
+          <button style={{ width: "100%", background: p.best ? C.primary : "transparent", color: p.best ? "#fff" : C.primary, border: `1.5px solid ${C.primary}`, borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", boxSizing: "border-box" }}>Buy on Amazon →</button>
+        </div>
+      ))}
+      <div style={{ background: "#F0FDF4", border: "1.5px solid #A7F3D0", borderRadius: 14, padding: 16, marginTop: 4 }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: C.success, marginBottom: 8 }}>After you buy your pack:</div>
+        {["Find your Premium code in the package or receipt email", "Come back to the app → Profile → Redeem Code", "Stick tags on boxes and scan them in Organise"].map((s, i) => (
+          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
+            <div style={{ width: 20, height: 20, background: C.success, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n="check" s={12} c="#fff" /></div>
+            <span style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{s}</span>
+          </div>
+        ))}
+        <button onClick={() => nav("redeem")} style={{ width: "100%", background: C.success, color: "#fff", border: "none", borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, fontFamily: "inherit", boxSizing: "border-box" }}>Already have a code? Redeem →</button>
+      </div>
+    </div>
+  );
+};
+
+const Redeem = ({ nav, setIsPremium }) => {
+  const [code, setCode] = useState("");
+  const [done, setDone] = useState(false);
+  const activate = () => { if (code.length >= 4) { setIsPremium(true); setDone(true); } };
+  if (done) return (
+    <div style={{ padding: "60px 32px", textAlign: "center" }}>
+      <div style={{ fontSize: 72, marginBottom: 20 }}>🎉</div>
+      <div style={{ fontWeight: 800, fontSize: 24, color: C.primary, marginBottom: 10 }}>Premium Unlocked!</div>
+      <div style={{ color: C.sub, fontSize: 14, lineHeight: 1.7, marginBottom: 32 }}>You now have <strong>7 days</strong> of full Premium. AI item recognition, smart search, and Ask are all yours.</div>
+      <Btn full label="Start Organising →" onClick={() => nav("home")} />
+    </div>
+  );
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
+        <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Redeem Code</div>
+      </div>
+      <div style={{ background: "linear-gradient(135deg, #6D28D9 0%, #EA580C 100%)", borderRadius: 20, padding: "28px 24px", marginBottom: 28, textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 12 }}>🏷️</div>
+        <div style={{ color: "#fff", fontWeight: 800, fontSize: 18, marginBottom: 8 }}>Your QR Tag Pack Includes</div>
+        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, lineHeight: 1.7 }}>A Premium code for <strong>1 free week</strong> of AI features. Codes stack — buy more tags, get more time.</div>
+      </div>
+      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8 }}>Enter Your Code</div>
+      <div style={{ color: C.sub, fontSize: 12, marginBottom: 10 }}>Find it in your tag pack envelope or on your receipt</div>
+      <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="KEEPIN-XXXX-XXXX" style={{ width: "100%", border: `2px solid ${code ? C.primary : C.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 16, outline: "none", fontFamily: "inherit", boxSizing: "border-box", letterSpacing: 1.5, marginBottom: 16 }} />
+      <Btn full label="Activate Premium Week" onClick={activate} variant={code.length >= 4 ? "primary" : "outline"} />
+      <div style={{ textAlign: "center", color: C.sub, fontSize: 13, margin: "20px 0 10px" }}>No code? Subscribe directly.</div>
+      <Btn full label="See Premium Plans →" onClick={() => nav("unlock")} variant="ghost" />
+    </div>
+  );
+};
+
+const Unlock = ({ nav, setIsPremium }) => {
+  const features = [
+    { icon: "sparkle", label: "AI Item Recognition", desc: "Photo → auto-detected name. Just confirm & save.", free: false },
+    { icon: "mic", label: "Ask", desc: '"Where are my winter clothes?" — spoken or typed.', free: false },
+    { icon: "search", label: "Smart Search", desc: "Search by holiday, occasion, weather, or purpose.", free: false },
+    { icon: "camera", label: "Photo + Manual Entry", desc: "Add items with photos. Stored forever.", free: true },
+    { icon: "scan", label: "QR Container Scanning", desc: "Scan tags to create physical containers.", free: true },
+    { icon: "search", label: "Keyword Search", desc: "Find any item by name instantly.", free: true },
+  ];
+  return (
+    <div style={{ padding: "0 20px 100px" }}>
+      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
+        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
+        <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Premium Features</div>
+      </div>
+      <div style={{ background: "linear-gradient(135deg, #6D28D9, #5B21B6)", borderRadius: 20, padding: "24px 20px", marginBottom: 24, textAlign: "center" }}>
+        <div style={{ fontSize: 40, marginBottom: 10 }}>✦</div>
+        <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>keepin Premium</div>
+        <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, lineHeight: 1.7 }}>Let AI do the work. Identify items by photo, ask where anything is, and search smarter.</div>
+      </div>
+      {features.map((f, i) => (
+        <div key={i} style={{ display: "flex", gap: 12, padding: "13px 0", borderBottom: `1px solid ${C.border}` }}>
+          <div style={{ width: 36, height: 36, background: f.free ? "#F3F4F6" : C.primaryLight, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={f.icon} s={18} c={f.free ? C.sub : C.primary} /></div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}><span style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{f.label}</span>{f.free ? pill("Free", "free") : pill("✦ Premium", "pro")}</div>
+            <div style={{ fontSize: 12, color: C.sub, lineHeight: 1.5 }}>{f.desc}</div>
+          </div>
+        </div>
+      ))}
+      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginTop: 24, marginBottom: 12 }}>Choose a Plan</div>
+      {[{ price: "$4.99/mo", label: "Monthly", sub: "Cancel anytime" }, { price: "$50/yr", label: "Annual — Best Value", sub: "Only $4.17/mo · save 17%" }].map((p, i) => (
+        <button key={i} onClick={() => { setIsPremium(true); nav("home"); }} style={{ width: "100%", background: i === 1 ? C.primaryLight : C.white, border: i === 1 ? `2px solid ${C.primary}` : `1.5px solid ${C.border}`, borderRadius: 14, padding: "16px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, cursor: "pointer", boxSizing: "border-box" }}>
+          <div style={{ textAlign: "left" }}><div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>{p.label}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{p.sub}</div></div>
+          <div style={{ fontWeight: 800, fontSize: 17, color: C.primary }}>{p.price}</div>
+        </button>
+      ))}
+      <div style={{ textAlign: "center", color: C.sub, fontSize: 13, margin: "12px 0 10px" }}>Have a tag pack code?</div>
+      <Btn full label="Redeem Free Week Code →" onClick={() => nav("redeem")} variant="outline" />
+    </div>
+  );
+};
+
+const Profile = ({ nav, isPremium, setIsPremium }) => (
+  <div style={{ padding: "0 0 100px" }}>
+    <div style={{ background: "linear-gradient(160deg, #EDE9FE 0%, #FFF7ED 100%)", padding: "36px 24px 28px", textAlign: "center" }}>
+      <div style={{ width: 68, height: 68, background: "linear-gradient(135deg, #6D28D9, #EA580C)", borderRadius: 22, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}><Ic n="user" s={32} c="#fff" /></div>
+      <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Sneha</div>
+      <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>singh.sne@northeastern.edu</div>
+      {isPremium
+        ? <div style={{ background: C.primary, color: "#fff", borderRadius: 20, padding: "5px 18px", fontSize: 12, fontWeight: 700, display: "inline-block", marginTop: 12 }}>✦ Premium Active · 7 days remaining</div>
+        : <button onClick={() => nav("unlock")} style={{ background: C.accent, color: "#fff", border: "none", borderRadius: 14, padding: "10px 24px", fontWeight: 700, fontSize: 14, marginTop: 12, cursor: "pointer", fontFamily: "inherit" }}>Upgrade to Premium</button>}
+    </div>
+    <div style={{ padding: "16px 20px 0" }}>
+      <button onClick={() => nav("redeem")} style={{ width: "100%", background: isPremium ? C.successLight : C.goldLight, border: `1.5px solid ${isPremium ? "#A7F3D0" : "#FDE68A"}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 16, boxSizing: "border-box" }}>
+        <div style={{ width: 38, height: 38, background: isPremium ? "#D1FAE5" : "#FEF3C7", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n="key" s={18} c={isPremium ? C.success : C.gold} /></div>
+        <div style={{ flex: 1, textAlign: "left" }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: isPremium ? C.success : C.gold }}>{isPremium ? "Redeem Another Code" : "Redeem QR Tag Code"}</div>
+          <div style={{ fontSize: 12, color: isPremium ? "#065F46" : "#92400E", marginTop: 2 }}>{isPremium ? "Stack more free Premium days" : "Got a tag pack? Enter code for free Premium"}</div>
+        </div>
+        <Ic n="chevron" s={16} c={isPremium ? C.success : C.gold} />
+      </button>
+      {[{ icon: "tag", label: "Get QR Tag Packs", sub: "Buy on Amazon — includes Premium", action: () => nav("gettags") }, { icon: "location", label: "My Locations", sub: "2 locations", action: () => {} }, { icon: "box", label: "My Containers", sub: "Manage all containers", action: () => {} }, { icon: "bell", label: "Notifications", sub: "Manage alerts", action: () => {} }, { icon: "info", label: "How Keepin Works", sub: "View instructions & tips", action: () => {} }].map((item, i) => (
+        <button key={i} onClick={item.action} style={{ background: "transparent", border: "none", borderBottom: `1px solid ${C.border}`, padding: "14px 0", width: "100%", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", boxSizing: "border-box" }}>
+          <div style={{ width: 38, height: 38, background: C.primaryLight, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n={item.icon} s={18} c={C.primary} /></div>
+          <div style={{ flex: 1, textAlign: "left" }}><div style={{ fontWeight: 600, fontSize: 14, color: C.text }}>{item.label}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{item.sub}</div></div>
+          <Ic n="chevron" s={16} c={C.sub} />
+        </button>
+      ))}
+      <button style={{ background: "none", border: "none", color: "#EF4444", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 24, fontFamily: "inherit" }}>Sign Out</button>
+    </div>
+  </div>
+);
+
+function App() {
+  const [screen, setScreen] = useState("onboarding");
+  const [isPremium, setIsPremium] = useState(false);
+  const [items, setItems] = useState([{ name: "Pen", emoji: "🖊️", container: "Book Box", location: "Home" }]);
+  const [containers, setContainers] = useState(["Book Box"]);
+  const nav = s => setScreen(s);
+  const tabs = [{ id: "home", icon: "home", label: "Home" }, { id: "organize", icon: "box", label: "Organise" }, { id: "search", icon: "search", label: "Find" }, { id: "profile", icon: "user", label: "Profile" }];
+  const showNav = screen !== "onboarding";
+
+  const renderScreen = () => {
+    switch (screen) {
+      case "onboarding": return <Onboarding onDone={() => nav("home")} />;
+      case "home": return <Home isPremium={isPremium} nav={nav} items={items} containers={containers} />;
+      case "organize": return <Organise nav={nav} isPremium={isPremium} containers={containers} setContainers={setContainers} items={items} setItems={setItems} />;
+      case "search": return <Search nav={nav} isPremium={isPremium} items={items} />;
+      case "profile": return <Profile nav={nav} isPremium={isPremium} setIsPremium={setIsPremium} />;
+      case "redeem": return <Redeem nav={nav} setIsPremium={setIsPremium} />;
+      case "unlock": return <Unlock nav={nav} setIsPremium={setIsPremium} />;
+      case "gettags": return <GetTags nav={nav} />;
+      case "ask": return (
+        <div style={{ padding: "40px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 60, marginBottom: 16 }}>🎙️</div>
+          <div style={{ fontWeight: 800, fontSize: 22, color: C.text, marginBottom: 10 }}>Ask Keepin</div>
+          <div style={{ color: C.sub, fontSize: 14, marginBottom: 28, lineHeight: 1.7 }}>Try: "Where are my winter clothes?" or "What's in Box 3?"</div>
+          <div style={{ background: C.primaryLight, borderRadius: 14, padding: 14, marginBottom: 24 }}>
+            <input placeholder="Ask anything about your items…" style={{ width: "100%", border: "none", background: "transparent", fontSize: 15, outline: "none", fontFamily: "inherit", color: C.text, boxSizing: "border-box" }} />
+          </div>
+          <button onClick={() => nav("home")} style={{ background: "none", border: "none", color: C.sub, cursor: "pointer", fontFamily: "inherit" }}>← Back</button>
+        </div>
+      );
+      default: return <Home isPremium={isPremium} nav={nav} items={items} containers={containers} />;
+    }
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#D1D5DB", display: "flex", justifyContent: "center", alignItems: "flex-start", padding: 24, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      <div style={{ width: 375, background: C.bg, borderRadius: 44, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.25)", position: "relative" }}>
+        <div style={{ background: "transparent", padding: "12px 28px 0", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: C.text }}>
+          <span>9:41</span><span>▲ ● ●</span>
+        </div>
+        <div style={{ height: showNav ? 640 : 720, overflowY: "auto" }}>
+          {renderScreen()}
+        </div>
+        {showNav && (
+          <div style={{ background: C.white, borderTop: `1px solid ${C.border}`, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", padding: "10px 0 18px" }}>
+            {tabs.map(t => {
+              const active = screen === t.id;
+              return (
+                <button key={t.id} onClick={() => nav(t.id)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                  <div style={{ width: 40, height: 32, background: active ? C.primaryLight : "transparent", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n={t.icon} s={20} c={active ? C.primary : C.sub} /></div>
+                  <span style={{ fontSize: 11, color: active ? C.primary : C.sub, fontWeight: active ? 700 : 400 }}>{t.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
