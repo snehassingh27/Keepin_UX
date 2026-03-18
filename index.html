@@ -1,553 +1,1226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Keepin</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}</style>
-</head>
-<body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState } = React;
+import { useState } from "react";
 
-const C = {
-  bg: "#F7F5FF", white: "#FFFFFF", primary: "#6D28D9", primaryLight: "#EDE9FE",
-  accent: "#EA580C", accentLight: "#FFF7ED", gold: "#D97706", goldLight: "#FFFBEB",
-  text: "#1C1917", sub: "#78716C", border: "#E7E5E4", success: "#059669", successLight: "#ECFDF5",
+const T = {
+  bg:"#FEFCFB", surface:"#FFFFFF", s2:"#FAF7F5", s3:"#F5F0EC",
+  ink:"#2A1F2E", ink2:"#7A6878", ink3:"#B8A8B4", border:"#EDE5EA",
+  brand:"#E8645A", brandBg:"#FDF0EF",
+  lav:"#C9A8D4", lavBg:"#F7F0FB",
+  gold:"#E8B86A", goldBg:"#FEF9F0",
+  amber:"#D4900A", amberBg:"#FFF8EC", amberBorder:"#F0D080",
+  green:"#5A8F72", greenBg:"#EFF7F3",
+  red:"#D94F3D",
+  parch:"#F7F2EB", parchBorder:"#DDD0BE",
 };
+const font = "'Inter',-apple-system,BlinkMacSystemFont,sans-serif";
+const grad = "linear-gradient(135deg,#F7F0FB 0%,#FEF4F2 50%,#FEF9F0 100%)";
 
-const Ic = ({ n, s = 20, c = C.primary }) => {
-  const d = {
-    home: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>,
-    scan: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="17" y2="14"/><line x1="20" y1="14" x2="20" y2="14"/><line x1="14" y1="17" x2="14" y2="20"/><line x1="17" y1="20" x2="20" y2="20"/><line x1="20" y1="17" x2="20" y2="20"/></svg>,
-    search: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    camera: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
-    box: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
-    chevron: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="9,18 15,12 9,6"/></svg>,
-    back: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="15,18 9,12 15,6"/></svg>,
-    check: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><polyline points="20,6 9,17 4,12"/></svg>,
-    lock: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
-    key: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>,
-    user: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-    plus: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-    sparkle: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>,
-    mic: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
-    edit: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
-    tag: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
-    bell: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
-    location: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
-    info: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
-    trash: <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
-    star: <svg width={s} height={s} viewBox="0 0 24 24" fill={c} stroke={c} strokeWidth="1.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>,
+// ── Icons ──────────────────────────────────────────────────
+function Ic({ n, s=20, c=T.ink2, w=1.6 }) {
+  const st = { width:s, height:s, display:"block", flexShrink:0 };
+  const map = {
+    home:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10.5z" stroke={c} strokeWidth={w} strokeLinejoin="round"/><path d="M9 21V13h6v8" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    box:      <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M20 7.5L12 3 4 7.5V16.5L12 21l8-4.5V7.5z" stroke={c} strokeWidth={w} strokeLinejoin="round"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5" stroke={c} strokeWidth={w}/></svg>,
+    search:   <svg style={st} viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke={c} strokeWidth={w}/><path d="M15.5 15.5L20 20" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    user:     <svg style={st} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke={c} strokeWidth={w}/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    scan:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5A1.5 1.5 0 0 1 18.5 20H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16" stroke={c} strokeWidth={w} strokeLinecap="round"/><rect x="8" y="8" width="8" height="8" rx="1" stroke={c} strokeWidth={w}/><rect x="10" y="10" width="4" height="4" rx="0.5" fill={c}/></svg>,
+    camera:   <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3l2-3h8l2 3h3a2 2 0 0 1 2 2v10z" stroke={c} strokeWidth={w} strokeLinejoin="round"/><circle cx="12" cy="13" r="3.5" stroke={c} strokeWidth={w}/></svg>,
+    mic:      <svg style={st} viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="11" rx="3" stroke={c} strokeWidth={w}/><path d="M5 11a7 7 0 0 0 14 0" stroke={c} strokeWidth={w} strokeLinecap="round"/><path d="M12 18v4M9 22h6" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    chev:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    back:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    check:    <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M4 13l5 5L20 7" stroke={c} strokeWidth={w+0.4} strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    lock:     <svg style={st} viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke={c} strokeWidth={w}/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke={c} strokeWidth={w} strokeLinecap="round"/><circle cx="12" cy="16" r="1.5" fill={c}/></svg>,
+    key:      <svg style={st} viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="13.5" r="4.5" stroke={c} strokeWidth={w}/><path d="M11.5 10.5L20 4M18 6l2 2M15 7l2 2" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    tag:      <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M3 3h8l9 9a2 2 0 0 1 0 2.828l-5.172 5.172a2 2 0 0 1-2.828 0L3 11V3z" stroke={c} strokeWidth={w} strokeLinejoin="round"/><circle cx="8" cy="8" r="1.5" fill={c}/></svg>,
+    bell:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M6 10a6 6 0 1 1 12 0c0 4 2 6 2 6H4s2-2 2-6z" stroke={c} strokeWidth={w} strokeLinejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    location: <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.314-2.686-6-6-6z" stroke={c} strokeWidth={w}/><circle cx="12" cy="8" r="2" stroke={c} strokeWidth={w}/></svg>,
+    info:     <svg style={st} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={c} strokeWidth={w}/><path d="M12 11v5" stroke={c} strokeWidth={w} strokeLinecap="round"/><circle cx="12" cy="8" r="0.8" fill={c}/></svg>,
+    sparkle:  <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7l2-7z" stroke={c} strokeWidth={w} strokeLinejoin="round"/></svg>,
+    edit:     <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M12 20H20" stroke={c} strokeWidth={w} strokeLinecap="round"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke={c} strokeWidth={w} strokeLinejoin="round"/></svg>,
+    folder:   <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke={c} strokeWidth={w} strokeLinejoin="round"/></svg>,
+    packages: <svg style={st} viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="9" height="9" rx="1.5" stroke={c} strokeWidth={w}/><rect x="13" y="13" width="9" height="9" rx="1.5" stroke={c} strokeWidth={w}/><rect x="7.5" y="2" width="9" height="9" rx="1.5" stroke={c} strokeWidth={w}/></svg>,
+    move:     <svg style={st} viewBox="0 0 24 24" fill="none"><polyline points="5,9 2,12 5,15" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/><polyline points="19,9 22,12 19,15" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/><line x1="2" y1="12" x2="22" y2="12" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    checkout: <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.51 0 2.93.37 4.17 1.03" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    donate:   <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke={c} strokeWidth={w} strokeLinejoin="round"/></svg>,
+    trash:    <svg style={st} viewBox="0 0 24 24" fill="none"><polyline points="3,6 5,6 21,6" stroke={c} strokeWidth={w} strokeLinecap="round"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    plus:     <svg style={st} viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke={c} strokeWidth={w} strokeLinecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    settings: <svg style={st} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke={c} strokeWidth={w}/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    filter:   <svg style={st} viewBox="0 0 24 24" fill="none"><polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3" stroke={c} strokeWidth={w} strokeLinejoin="round"/></svg>,
+    external: <svg style={st} viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke={c} strokeWidth={w} strokeLinecap="round"/><polyline points="15,3 21,3 21,9" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/><line x1="10" y1="14" x2="21" y2="3" stroke={c} strokeWidth={w} strokeLinecap="round"/></svg>,
+    toggle:   <svg style={st} viewBox="0 0 24 24" fill="none"><rect x="1" y="7" width="22" height="10" rx="5" stroke={c} strokeWidth={w}/><circle cx="16" cy="12" r="3" fill={c}/></svg>,
+    toggleoff:<svg style={st} viewBox="0 0 24 24" fill="none"><rect x="1" y="7" width="22" height="10" rx="5" stroke={c} strokeWidth={w}/><circle cx="8" cy="12" r="3" fill={c}/></svg>,
   };
-  return d[n] || null;
-};
+  return map[n] || <svg style={st} viewBox="0 0 24 24"/>;
+}
 
-const pill = (label, type = "free") => {
-  const styles = { free: { bg: C.successLight, color: C.success, border: "#A7F3D0" }, pro: { bg: C.goldLight, color: C.gold, border: "#FDE68A" } };
-  const s = styles[type];
-  return <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20 }}>{label}</span>;
-};
+// ── Primitives ─────────────────────────────────────────────
+function Btn({ label, onClick, full, variant, small, icon }) {
+  const v = variant || "primary";
+  const styles = {
+    primary: { bg:T.brand,  color:"#fff",        border:"none" },
+    ghost:   { bg:"transparent", color:T.ink2,   border:"1.5px solid "+T.border },
+    outline: { bg:"transparent", color:T.brand,  border:"1.5px solid "+T.brand },
+    parch:   { bg:T.parch,  color:T.ink,         border:"1.5px solid "+T.parchBorder },
+    muted:   { bg:T.s2,     color:T.ink3,        border:"none" },
+  };
+  const s = styles[v] || styles.primary;
+  return (
+    <button onClick={onClick} style={{ background:s.bg, color:s.color, border:s.border, borderRadius:13, padding:small?"9px 16px":"13px 20px", fontWeight:600, fontSize:small?13:15, cursor:"pointer", width:full?"100%":"auto", display:"flex", alignItems:"center", justifyContent:"center", gap:8, fontFamily:font, boxSizing:"border-box" }}>
+      {icon && <Ic n={icon} s={16} c={s.color} />}{label}
+    </button>
+  );
+}
 
-const Btn = ({ label, onClick, variant = "primary", full = false, icon, small = false }) => {
-  const styles = { primary: { bg: C.primary, color: "#fff", border: "none" }, accent: { bg: C.accent, color: "#fff", border: "none" }, outline: { bg: "transparent", color: C.primary, border: `1.5px solid ${C.primary}` }, ghost: { bg: C.primaryLight, color: C.primary, border: "none" }, gold: { bg: "#D97706", color: "#fff", border: "none" } };
-  const s = styles[variant];
-  return <button onClick={onClick} style={{ background: s.bg, color: s.color, border: s.border, borderRadius: 14, padding: small ? "9px 16px" : "13px 20px", fontWeight: 700, fontSize: small ? 13 : 15, cursor: "pointer", width: full ? "100%" : "auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "inherit" }}>{icon && icon}{label}</button>;
-};
-
-const Onboarding = ({ onDone }) => {
-  const [step, setStep] = useState(0);
-  const steps = [
-    { emoji: "📦", title: "Never lose anything again", body: "Keepin tracks everything you own — by box, shelf, room, or bag. Find anything in seconds.", cta: "Let's go" },
-    { emoji: "🏷️", title: "Your QR tag creates a container", body: "Stick a Keepin QR tag on any box or drawer. Scan it in the app and a tracked container is created instantly.", cta: "Got it" },
-    { emoji: "📸", title: "Add items by photo", body: "Take a photo of what's inside, type the name, and it's saved. Premium users get AI auto-detection — no typing needed.", cta: "Got it" },
-    { emoji: "🔍", title: "Search to find anything", body: "Type any item name and see exactly which container it's in. Premium unlocks smart search by occasion, weather, or purpose.", cta: "Start organising" },
+function NavBar({ screen, nav }) {
+  const tabs = [
+    { id:"home",     icon:"home",   label:"Home" },
+    { id:"organise", icon:"box",    label:"Organise" },
+    { id:"browse",   icon:"search", label:"Browse" },
   ];
-  const s = steps[step];
-  const isLast = step === steps.length - 1;
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: C.white }}>
-      <div style={{ display: "flex", gap: 6, padding: "20px 24px 0" }}>
-        {steps.map((_, i) => <div key={i} style={{ flex: 1, height: 4, borderRadius: 4, background: i <= step ? C.primary : C.border, transition: "background 0.3s" }} />)}
-      </div>
-      <div style={{ textAlign: "right", padding: "8px 24px 0" }}>
-        <button onClick={onDone} style={{ background: "none", border: "none", color: C.sub, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Skip</button>
-      </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 32px 40px", textAlign: "center" }}>
-        <div style={{ fontSize: 80, marginBottom: 28, lineHeight: 1 }}>{s.emoji}</div>
-        <div style={{ fontWeight: 800, fontSize: 24, color: C.text, marginBottom: 14, lineHeight: 1.3 }}>{s.title}</div>
-        <div style={{ color: C.sub, fontSize: 15, lineHeight: 1.7, marginBottom: 40 }}>{s.body}</div>
-        <Btn full label={s.cta} onClick={() => isLast ? onDone() : setStep(p => p + 1)} />
-        {!isLast && <button onClick={onDone} style={{ background: "none", border: "none", color: C.sub, fontSize: 13, cursor: "pointer", marginTop: 16, fontFamily: "inherit" }}>Skip intro</button>}
-      </div>
-    </div>
-  );
-};
-
-const Home = ({ isPremium, nav, items, containers }) => {
-  const isEmpty = items.length === 0;
-  return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0 8px" }}>
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Hello, Sneha 👋</div>
-          <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>{isEmpty ? "Let's start organising" : `${items.length} item${items.length !== 1 ? "s" : ""} tracked`}</div>
-        </div>
-        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 14, padding: 10, cursor: "pointer" }}><Ic n="user" s={20} c={C.primary} /></button>
-      </div>
-      {isPremium && (
-        <div style={{ background: "linear-gradient(135deg, #6D28D9, #EA580C)", borderRadius: 14, padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>✦ Premium Active</div>
-          <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>AI features unlocked</div>
-        </div>
-      )}
-      {isEmpty && !isPremium && (
-        <div style={{ background: "linear-gradient(135deg, #EDE9FE, #FFF7ED)", border: `1.5px solid #DDD6FE`, borderRadius: 18, padding: 20, marginBottom: 20 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: C.primary, marginBottom: 12 }}>📋 How Keepin works</div>
-          {[{ step: "1", text: "Scan a QR tag or create a digital container" }, { step: "2", text: "Add items inside by photo + name" }, { step: "3", text: "Search any item to find it instantly" }].map(s => (
-            <div key={s.step} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
-              <div style={{ width: 26, height: 26, background: C.primary, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#fff", fontWeight: 800, fontSize: 12 }}>{s.step}</div>
-              <div style={{ color: C.text, fontSize: 13, lineHeight: 1.5, paddingTop: 4 }}>{s.text}</div>
+    <div style={{ background:T.surface, borderTop:"1px solid "+T.border, display:"grid", gridTemplateColumns:"1fr 1fr 1fr", padding:"10px 0 20px" }}>
+      {tabs.map(function(t) {
+        const active = screen === t.id;
+        return (
+          <button key={t.id} onClick={function(){ nav(t.id); }} style={{ background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4, padding:0 }}>
+            <div style={{ width:36, height:28, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <Ic n={t.icon} s={20} c={active?T.brand:T.ink3} w={active?2:1.5} />
             </div>
-          ))}
-          <Btn full label="Create my first container →" onClick={() => nav("organize")} />
-        </div>
-      )}
-      {!isEmpty && (
-        <>
-          <button onClick={() => nav("search")} style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: "13px 16px", display: "flex", alignItems: "center", gap: 10, marginBottom: 16, cursor: "pointer", boxSizing: "border-box" }}>
-            <Ic n="search" s={18} c={C.sub} /><span style={{ color: C.sub, fontSize: 14 }}>Search your items…</span>
+            <span style={{ fontSize:10, color:active?T.brand:T.ink3, fontWeight:active?700:400, fontFamily:font }}>{t.label}</span>
           </button>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
-            {[{ v: 2, l: "Locations", i: "location" }, { v: containers.length, l: "Containers", i: "box" }, { v: items.length, l: "Items", i: "tag" }].map(s => (
-              <div key={s.l} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 8px", textAlign: "center" }}>
-                <div style={{ marginBottom: 4 }}><Ic n={s.i} s={16} c={C.primary} /></div>
-                <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>{s.v}</div>
-                <div style={{ fontSize: 11, color: C.sub }}>{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
-        <button onClick={() => nav("organize")} style={{ background: C.primaryLight, border: "none", borderRadius: 18, padding: "20px 16px", textAlign: "left", cursor: "pointer" }}>
-          <div style={{ width: 40, height: 40, background: C.primary, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Ic n="scan" s={22} c="#fff" /></div>
-          <div style={{ fontWeight: 800, fontSize: 15, color: C.primary }}>Organise</div>
-          <div style={{ fontSize: 12, color: "#5B21B6", marginTop: 4, lineHeight: 1.4 }}>Add containers & items</div>
-        </button>
-        <button onClick={() => isPremium ? nav("ask") : nav("unlock")} style={{ background: isPremium ? "#FFF7ED" : "#F5F5F5", border: isPremium ? "none" : `1.5px dashed ${C.border}`, borderRadius: 18, padding: "20px 16px", textAlign: "left", cursor: "pointer", position: "relative" }}>
-          {!isPremium && <div style={{ position: "absolute", top: 10, right: 10, background: C.goldLight, border: `1px solid #FDE68A`, borderRadius: 20, padding: "2px 7px", fontSize: 10, fontWeight: 700, color: C.gold }}>PREMIUM</div>}
-          <div style={{ width: 40, height: 40, background: isPremium ? C.accent : "#E5E7EB", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}><Ic n="mic" s={22} c={isPremium ? "#fff" : C.sub} /></div>
-          <div style={{ fontWeight: 800, fontSize: 15, color: isPremium ? C.accent : C.sub }}>Ask</div>
-          <div style={{ fontSize: 12, color: isPremium ? "#92400E" : C.sub, marginTop: 4, lineHeight: 1.4 }}>{isPremium ? '"Where are my winter clothes?"' : "Voice & smart search"}</div>
-        </button>
-      </div>
-      {!isEmpty && (
-        <>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>Recently Added</div>
-            <button onClick={() => nav("search")} style={{ background: "none", border: "none", color: C.accent, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>View all →</button>
-          </div>
-          {items.slice(-2).reverse().map((item, i) => (
-            <div key={i} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-              <div style={{ width: 48, height: 48, background: "#F3F4F6", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{item.emoji}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{item.name}</div>
-                <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📦 {item.container} · 📍 {item.location}</div>
-              </div>
-              <Ic n="chevron" s={16} c={C.sub} />
-            </div>
-          ))}
-        </>
-      )}
-      {!isPremium && (
-        <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <button onClick={() => nav("gettags")} style={{ background: "linear-gradient(135deg, #6D28D9, #4C1D95)", border: "none", borderRadius: 16, padding: "14px 14px", cursor: "pointer", textAlign: "left", boxSizing: "border-box" }}>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>🏷️ Get QR Tags</div>
-            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, marginTop: 3, lineHeight: 1.4 }}>Buy on Amazon, comes with Premium</div>
-          </button>
-          <button onClick={() => nav("redeem")} style={{ background: "linear-gradient(135deg, #EA580C, #C2410C)", border: "none", borderRadius: 16, padding: "14px 14px", cursor: "pointer", textAlign: "left", boxSizing: "border-box" }}>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 13 }}>🔑 Redeem Code</div>
-            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, marginTop: 3, lineHeight: 1.4 }}>Have a pack already? Enter code</div>
-          </button>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
-};
+}
 
-const Organise = ({ nav, isPremium, containers, setContainers, items, setItems }) => {
-  const [view, setView] = useState("main");
-  const [selectedContainer, setSelectedContainer] = useState(null);
-  const [itemName, setItemName] = useState("");
-  const [itemEmoji, setItemEmoji] = useState("📦");
-  const [aiLoading, setAiLoading] = useState(false);
-  const emojis = ["📦", "🖊️", "👕", "📚", "🔧", "💊", "🎮", "👟", "🧴", "🍽️", "📷", "🧸"];
-  const saveItem = () => { if (!itemName.trim() || !selectedContainer) return; setItems(p => [...p, { name: itemName, emoji: itemEmoji, container: selectedContainer, location: "Home" }]); setItemName(""); setItemEmoji("📦"); setView("main"); };
-  const fakeAI = () => { setAiLoading(true); setTimeout(() => { setItemName("Blue Pen"); setItemEmoji("🖊️"); setAiLoading(false); }, 1400); };
-
-  if (view === "addItem") return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={() => setView("main")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
-        <div><div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Add Item</div><div style={{ fontSize: 12, color: C.sub }}>to "{selectedContainer}"</div></div>
-      </div>
-      <div style={{ background: "#F3F4F6", borderRadius: 16, height: 180, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 16, border: `2px dashed ${C.border}` }}>
-        <Ic n="camera" s={32} c={C.sub} />
-        <div style={{ color: C.sub, fontSize: 14, fontWeight: 600 }}>Tap to take photo</div>
-        <div style={{ color: C.sub, fontSize: 12 }}>or choose from library</div>
-      </div>
-      <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 14, color: C.text, marginBottom: 12 }}>How do you want to name this item?</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
-          <button onClick={() => isPremium ? fakeAI() : nav("unlock")} style={{ background: isPremium ? C.goldLight : "#F9FAFB", border: isPremium ? "1.5px solid #FDE68A" : `1.5px dashed ${C.border}`, borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center", position: "relative" }}>
-            {!isPremium && <div style={{ position: "absolute", top: -6, right: -6, background: C.gold, borderRadius: 12, padding: "2px 7px", fontSize: 9, fontWeight: 700, color: "#fff" }}>🔒 PRO</div>}
-            <div style={{ fontSize: 24, marginBottom: 6 }}>{aiLoading ? "⏳" : "✨"}</div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: isPremium ? C.gold : C.sub }}>AI Identify</div>
-            <div style={{ fontSize: 11, color: isPremium ? "#92400E" : C.sub, marginTop: 3 }}>{aiLoading ? "Detecting…" : "Auto from photo"}</div>
-          </button>
-          <button style={{ background: C.primaryLight, border: "none", borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center" }}>
-            <div style={{ fontSize: 24, marginBottom: 6 }}>✏️</div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: C.primary }}>Type Name</div>
-            <div style={{ fontSize: 11, color: "#5B21B6", marginTop: 3 }}>Always free</div>
-          </button>
-        </div>
-        <input value={itemName} onChange={e => setItemName(e.target.value)} placeholder="Item name (e.g. Blue Pen)" style={{ width: "100%", border: `1.5px solid ${itemName ? C.primary : C.border}`, borderRadius: 12, padding: "12px 14px", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 12 }} />
-        <div style={{ fontSize: 12, color: C.sub, marginBottom: 8, fontWeight: 600 }}>Pick an icon</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {emojis.map(e => <button key={e} onClick={() => setItemEmoji(e)} style={{ width: 36, height: 36, background: e === itemEmoji ? C.primaryLight : "#F9FAFB", border: e === itemEmoji ? `1.5px solid ${C.primary}` : `1px solid ${C.border}`, borderRadius: 10, fontSize: 18, cursor: "pointer" }}>{e}</button>)}
-        </div>
-      </div>
-      <Btn full label="Save Item" onClick={saveItem} variant={itemName ? "primary" : "outline"} />
-    </div>
-  );
-
+function TopBar({ title, onBack, nav, noUser }) {
   return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 4px" }}>
-        <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Organise</div>
-        <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>Add containers, then add items inside them</div>
+    <div style={{ background:grad, padding:"14px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+      <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+        {onBack && (
+          <button onClick={onBack} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer" }}>
+            <Ic n="back" s={17} c={T.ink} />
+          </button>
+        )}
+        <span style={{ fontWeight:700, fontSize:17, color:T.ink, fontFamily:font }}>{title}</span>
       </div>
-      {containers.length === 0 && (
-        <div style={{ background: C.primaryLight, borderRadius: 14, padding: "12px 16px", marginTop: 12, marginBottom: 0, display: "flex", gap: 10, alignItems: "flex-start" }}>
-          <Ic n="info" s={18} c={C.primary} />
-          <div style={{ fontSize: 13, color: "#4C1D95", lineHeight: 1.5 }}><strong>First:</strong> Create a container (a box, shelf, or drawer). Then add items inside it.</div>
+      {!noUser && nav && (
+        <div style={{ display:"flex", gap:10 }}>
+          <button onClick={function(){ nav("notifications"); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer", position:"relative" }}>
+            <Ic n="bell" s={17} c={T.ink2} />
+            <div style={{ position:"absolute", top:4, right:4, width:8, height:8, background:T.brand, borderRadius:"50%", border:"1.5px solid #fff" }}/>
+          </button>
+          <button onClick={function(){ nav("account"); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer" }}>
+            <Ic n="user" s={17} c={T.ink2} />
+          </button>
         </div>
       )}
-      <div style={{ marginTop: 20, marginBottom: 8 }}>
-        <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 12 }}>Step 1 — Create a Container</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
-          <button style={{ background: C.primaryLight, border: "none", borderRadius: 14, padding: 16, cursor: "pointer", textAlign: "center" }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>📷</div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: C.primary }}>Scan QR Tag</div>
-            <div style={{ fontSize: 11, color: "#5B21B6", marginTop: 4, lineHeight: 1.4 }}>Attach tag to a box, then scan</div>
-          </button>
-          <button onClick={() => setContainers(p => [...p, `Container ${p.length + 1}`])} style={{ background: "#F9FAFB", border: `1.5px dashed ${C.border}`, borderRadius: 14, padding: 16, cursor: "pointer", textAlign: "center" }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>📁</div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: C.text }}>Digital Container</div>
-            <div style={{ fontSize: 11, color: C.sub, marginTop: 4, lineHeight: 1.4 }}>No QR tag needed</div>
-          </button>
-        </div>
+    </div>
+  );
+}
+
+function ItemRow({ item, onPress, badge }) {
+  return (
+    <button onClick={onPress} style={{ width:"100%", background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"11px 14px", display:"flex", alignItems:"center", gap:12, marginBottom:8, cursor:"pointer", boxSizing:"border-box", textAlign:"left" }}>
+      {badge && <div style={{ background:T.goldBg, border:"1px solid #EDD8B0", borderRadius:7, padding:"2px 7px", fontSize:10, fontWeight:700, color:T.gold, fontFamily:font, flexShrink:0 }}>{badge}</div>}
+      <div style={{ width:40, height:40, background:T.brandBg, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+        <Ic n="tag" s={17} c={T.brand} />
       </div>
-      {containers.length > 0 && (
-        <>
-          <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 10, marginTop: 4 }}>Step 2 — Add Items to a Container</div>
-          <div style={{ fontSize: 12, color: C.sub, marginBottom: 12 }}>Tap a container to add items inside it</div>
-          {containers.map((c, i) => {
-            const count = items.filter(it => it.container === c).length;
-            return (
-              <button key={i} onClick={() => { setSelectedContainer(c); setView("addItem"); }} style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8, cursor: "pointer", boxSizing: "border-box" }}>
-                <div style={{ width: 40, height: 40, background: C.primaryLight, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n="box" s={20} c={C.primary} /></div>
-                <div style={{ flex: 1, textAlign: "left" }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{c}</div>
-                  <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{count} item{count !== 1 ? "s" : ""} · Digital</div>
-                </div>
-                <div style={{ background: C.accent, color: "#fff", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700 }}>+ Add Item</div>
-              </button>
-            );
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontWeight:600, fontSize:13, color:T.ink, fontFamily:font, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{item.name}</div>
+        <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:2 }}>{item.location} · {item.container}</div>
+        {item.tags && <div style={{ fontSize:10, color:T.lav, fontFamily:font, marginTop:2 }}>{item.tags}</div>}
+      </div>
+      <Ic n="chev" s={14} c={T.ink3} />
+    </button>
+  );
+}
+
+function BottomModal({ title, body, actions }) {
+  return (
+    <div style={{ position:"absolute", inset:0, background:"rgba(42,31,46,0.45)", display:"flex", alignItems:"flex-end", zIndex:100 }}>
+      <div style={{ background:T.surface, borderRadius:"20px 20px 0 0", padding:"24px 20px 36px", width:"100%", boxSizing:"border-box" }}>
+        <div style={{ fontWeight:700, fontSize:16, color:T.ink, fontFamily:font, marginBottom:8 }}>{title}</div>
+        <div style={{ fontSize:13, color:T.ink2, fontFamily:font, lineHeight:1.6, marginBottom:22 }}>{body}</div>
+        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+          {actions.map(function(a, i) {
+            return <Btn key={i} full label={a.label} onClick={a.onClick} variant={a.variant||"primary"} />;
           })}
-        </>
-      )}
-    </div>
-  );
-};
-
-const Search = ({ nav, isPremium, items }) => {
-  const [q, setQ] = useState("");
-  const results = q.trim() ? items.filter(it => it.name.toLowerCase().includes(q.toLowerCase())) : [];
-  const tags = ["🎄 Holiday", "✈️ Travel", "🌧️ Rainy Day", "🎉 Party", "🏕️ Camping"];
-  return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 16px" }}>
-        <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Find Anything</div>
-        <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>Search by item name or occasion</div>
-      </div>
-      <div style={{ flex: 1, position: "relative", marginBottom: 20 }}>
-        <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}><Ic n="search" s={18} c={C.sub} /></div>
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder="e.g. blue pen, charger…" style={{ width: "100%", border: `1.5px solid ${q ? C.primary : C.border}`, borderRadius: 12, padding: "12px 16px 12px 38px", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
-      </div>
-      {q && (
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>Results</div>{pill("Free", "free")}
-          </div>
-          {results.length === 0 ? (
-            <div style={{ background: "#F9FAFB", borderRadius: 14, padding: "24px 16px", textAlign: "center" }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🤷</div>
-              <div style={{ color: C.sub, fontSize: 14 }}>No items found for "{q}"</div>
-            </div>
-          ) : results.map((it, i) => (
-            <div key={i} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-              <div style={{ width: 44, height: 44, background: "#F3F4F6", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{it.emoji}</div>
-              <div><div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{it.name}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>📦 {it.container} · 📍 {it.location}</div></div>
-            </div>
-          ))}
         </div>
-      )}
-      <div style={{ background: isPremium ? C.goldLight : "#F9FAFB", border: isPremium ? `1.5px solid #FDE68A` : `1.5px dashed ${C.border}`, borderRadius: 16, padding: 16 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <div style={{ fontWeight: 700, fontSize: 14, color: isPremium ? C.gold : C.sub }}>Smart Search by Occasion</div>{pill("✦ Premium", "pro")}
-        </div>
-        <div style={{ fontSize: 12, color: isPremium ? "#92400E" : C.sub, marginBottom: 12, lineHeight: 1.5 }}>{isPremium ? "Search by event, weather, or purpose — not just item names." : "Upgrade to search by context, not just names."}</div>
-        {isPremium ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {tags.map(t => <button key={t} style={{ background: "#FEF3C7", color: "#92400E", border: "none", borderRadius: 20, padding: "6px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>{t}</button>)}
-          </div>
-        ) : (
-          <>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, opacity: 0.4, marginBottom: 14 }}>
-              {tags.map(t => <div key={t} style={{ background: "#E5E7EB", color: C.sub, borderRadius: 20, padding: "6px 12px", fontSize: 13, fontWeight: 600 }}>{t}</div>)}
-            </div>
-            <button onClick={() => nav("unlock")} style={{ width: "100%", background: C.gold, color: "#fff", border: "none", borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Unlock Smart Search →</button>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const GetTags = ({ nav }) => {
-  const packs = [
-    { name: "Starter Pack", qty: "10 QR Tags", price: "$19.99", bonus: "1 week Premium included", best: false, emoji: "📦" },
-    { name: "Mover Pack", qty: "30 QR Tags", price: "$39.99", bonus: "3 weeks Premium included", best: true, emoji: "🚚" },
-    { name: "Home Pack", qty: "60 QR Tags", price: "$59.99", bonus: "6 weeks Premium included", best: false, emoji: "🏠" },
-  ];
-  return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 4px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={() => nav("home")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
-        <div><div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Get QR Tag Packs</div><div style={{ fontSize: 12, color: C.sub }}>Physical tags — sold on Amazon</div></div>
-      </div>
-      <div style={{ background: "linear-gradient(135deg, #EDE9FE, #FFF7ED)", borderRadius: 18, padding: 20, marginTop: 12, marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 15, color: C.primary, marginBottom: 10 }}>What are Keepin QR Tags?</div>
-        {[{ e: "🏷️", t: "Small sticker tags you attach to any box, drawer, shelf, or bag" }, { e: "📱", t: "Scan a tag in the app to instantly create a tracked container" }, { e: "✨", t: "Every pack includes a Premium code for free AI features" }, { e: "♾️", t: "Your items stay saved forever — even after Premium ends" }].map((s, i) => (
-          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>{s.e}</span>
-            <span style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{s.t}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 12 }}>Choose a Pack</div>
-      {packs.map((p, i) => (
-        <div key={i} style={{ background: C.white, border: `${p.best ? "2px" : "1.5px"} solid ${p.best ? C.primary : C.border}`, borderRadius: 16, padding: 16, marginBottom: 12, position: "relative" }}>
-          {p.best && <div style={{ position: "absolute", top: -10, left: 16, background: C.primary, color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 12px", borderRadius: 20 }}>Most Popular</div>}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <span style={{ fontSize: 26 }}>{p.emoji}</span>
-              <div><div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>{p.name}</div><div style={{ fontSize: 13, color: C.sub }}>{p.qty}</div></div>
-            </div>
-            <div style={{ fontWeight: 800, fontSize: 18, color: C.primary }}>{p.price}</div>
-          </div>
-          <div style={{ background: C.goldLight, border: "1px solid #FDE68A", borderRadius: 10, padding: "7px 12px", fontSize: 12, color: C.gold, fontWeight: 600, marginBottom: 12 }}>🎁 {p.bonus}</div>
-          <button style={{ width: "100%", background: p.best ? C.primary : "transparent", color: p.best ? "#fff" : C.primary, border: `1.5px solid ${C.primary}`, borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", boxSizing: "border-box" }}>Buy on Amazon →</button>
-        </div>
-      ))}
-      <div style={{ background: "#F0FDF4", border: "1.5px solid #A7F3D0", borderRadius: 14, padding: 16, marginTop: 4 }}>
-        <div style={{ fontWeight: 700, fontSize: 14, color: C.success, marginBottom: 8 }}>After you buy your pack:</div>
-        {["Find your Premium code in the package or receipt email", "Come back to the app → Profile → Redeem Code", "Stick tags on boxes and scan them in Organise"].map((s, i) => (
-          <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
-            <div style={{ width: 20, height: 20, background: C.success, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n="check" s={12} c="#fff" /></div>
-            <span style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{s}</span>
-          </div>
-        ))}
-        <button onClick={() => nav("redeem")} style={{ width: "100%", background: C.success, color: "#fff", border: "none", borderRadius: 12, padding: "11px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 8, fontFamily: "inherit", boxSizing: "border-box" }}>Already have a code? Redeem →</button>
-      </div>
-    </div>
-  );
-};
-
-const Redeem = ({ nav, setIsPremium }) => {
-  const [code, setCode] = useState("");
-  const [done, setDone] = useState(false);
-  const activate = () => { if (code.length >= 4) { setIsPremium(true); setDone(true); } };
-  if (done) return (
-    <div style={{ padding: "60px 32px", textAlign: "center" }}>
-      <div style={{ fontSize: 72, marginBottom: 20 }}>🎉</div>
-      <div style={{ fontWeight: 800, fontSize: 24, color: C.primary, marginBottom: 10 }}>Premium Unlocked!</div>
-      <div style={{ color: C.sub, fontSize: 14, lineHeight: 1.7, marginBottom: 32 }}>You now have <strong>7 days</strong> of full Premium. AI item recognition, smart search, and Ask are all yours.</div>
-      <Btn full label="Start Organising →" onClick={() => nav("home")} />
-    </div>
-  );
-  return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
-        <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Redeem Code</div>
-      </div>
-      <div style={{ background: "linear-gradient(135deg, #6D28D9 0%, #EA580C 100%)", borderRadius: 20, padding: "28px 24px", marginBottom: 28, textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>🏷️</div>
-        <div style={{ color: "#fff", fontWeight: 800, fontSize: 18, marginBottom: 8 }}>Your QR Tag Pack Includes</div>
-        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, lineHeight: 1.7 }}>A Premium code for <strong>1 free week</strong> of AI features. Codes stack — buy more tags, get more time.</div>
-      </div>
-      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginBottom: 8 }}>Enter Your Code</div>
-      <div style={{ color: C.sub, fontSize: 12, marginBottom: 10 }}>Find it in your tag pack envelope or on your receipt</div>
-      <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="KEEPIN-XXXX-XXXX" style={{ width: "100%", border: `2px solid ${code ? C.primary : C.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 16, outline: "none", fontFamily: "inherit", boxSizing: "border-box", letterSpacing: 1.5, marginBottom: 16 }} />
-      <Btn full label="Activate Premium Week" onClick={activate} variant={code.length >= 4 ? "primary" : "outline"} />
-      <div style={{ textAlign: "center", color: C.sub, fontSize: 13, margin: "20px 0 10px" }}>No code? Subscribe directly.</div>
-      <Btn full label="See Premium Plans →" onClick={() => nav("unlock")} variant="ghost" />
-    </div>
-  );
-};
-
-const Unlock = ({ nav, setIsPremium }) => {
-  const features = [
-    { icon: "sparkle", label: "AI Item Recognition", desc: "Photo → auto-detected name. Just confirm & save.", free: false },
-    { icon: "mic", label: "Ask", desc: '"Where are my winter clothes?" — spoken or typed.', free: false },
-    { icon: "search", label: "Smart Search", desc: "Search by holiday, occasion, weather, or purpose.", free: false },
-    { icon: "camera", label: "Photo + Manual Entry", desc: "Add items with photos. Stored forever.", free: true },
-    { icon: "scan", label: "QR Container Scanning", desc: "Scan tags to create physical containers.", free: true },
-    { icon: "search", label: "Keyword Search", desc: "Find any item by name instantly.", free: true },
-  ];
-  return (
-    <div style={{ padding: "0 20px 100px" }}>
-      <div style={{ padding: "18px 0 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={() => nav("profile")} style={{ background: C.primaryLight, border: "none", borderRadius: 10, padding: 8, cursor: "pointer" }}><Ic n="back" s={20} c={C.primary} /></button>
-        <div style={{ fontWeight: 800, fontSize: 20, color: C.text }}>Premium Features</div>
-      </div>
-      <div style={{ background: "linear-gradient(135deg, #6D28D9, #5B21B6)", borderRadius: 20, padding: "24px 20px", marginBottom: 24, textAlign: "center" }}>
-        <div style={{ fontSize: 40, marginBottom: 10 }}>✦</div>
-        <div style={{ color: "#fff", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>keepin Premium</div>
-        <div style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, lineHeight: 1.7 }}>Let AI do the work. Identify items by photo, ask where anything is, and search smarter.</div>
-      </div>
-      {features.map((f, i) => (
-        <div key={i} style={{ display: "flex", gap: 12, padding: "13px 0", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ width: 36, height: 36, background: f.free ? "#F3F4F6" : C.primaryLight, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={f.icon} s={18} c={f.free ? C.sub : C.primary} /></div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}><span style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{f.label}</span>{f.free ? pill("Free", "free") : pill("✦ Premium", "pro")}</div>
-            <div style={{ fontSize: 12, color: C.sub, lineHeight: 1.5 }}>{f.desc}</div>
-          </div>
-        </div>
-      ))}
-      <div style={{ fontWeight: 700, fontSize: 15, color: C.text, marginTop: 24, marginBottom: 12 }}>Choose a Plan</div>
-      {[{ price: "$4.99/mo", label: "Monthly", sub: "Cancel anytime" }, { price: "$50/yr", label: "Annual — Best Value", sub: "Only $4.17/mo · save 17%" }].map((p, i) => (
-        <button key={i} onClick={() => { setIsPremium(true); nav("home"); }} style={{ width: "100%", background: i === 1 ? C.primaryLight : C.white, border: i === 1 ? `2px solid ${C.primary}` : `1.5px solid ${C.border}`, borderRadius: 14, padding: "16px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, cursor: "pointer", boxSizing: "border-box" }}>
-          <div style={{ textAlign: "left" }}><div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>{p.label}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{p.sub}</div></div>
-          <div style={{ fontWeight: 800, fontSize: 17, color: C.primary }}>{p.price}</div>
-        </button>
-      ))}
-      <div style={{ textAlign: "center", color: C.sub, fontSize: 13, margin: "12px 0 10px" }}>Have a tag pack code?</div>
-      <Btn full label="Redeem Free Week Code →" onClick={() => nav("redeem")} variant="outline" />
-    </div>
-  );
-};
-
-const Profile = ({ nav, isPremium, setIsPremium }) => (
-  <div style={{ padding: "0 0 100px" }}>
-    <div style={{ background: "linear-gradient(160deg, #EDE9FE 0%, #FFF7ED 100%)", padding: "36px 24px 28px", textAlign: "center" }}>
-      <div style={{ width: 68, height: 68, background: "linear-gradient(135deg, #6D28D9, #EA580C)", borderRadius: 22, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}><Ic n="user" s={32} c="#fff" /></div>
-      <div style={{ fontWeight: 800, fontSize: 22, color: C.text }}>Sneha</div>
-      <div style={{ color: C.sub, fontSize: 13, marginTop: 2 }}>singh.sne@northeastern.edu</div>
-      {isPremium
-        ? <div style={{ background: C.primary, color: "#fff", borderRadius: 20, padding: "5px 18px", fontSize: 12, fontWeight: 700, display: "inline-block", marginTop: 12 }}>✦ Premium Active · 7 days remaining</div>
-        : <button onClick={() => nav("unlock")} style={{ background: C.accent, color: "#fff", border: "none", borderRadius: 14, padding: "10px 24px", fontWeight: 700, fontSize: 14, marginTop: 12, cursor: "pointer", fontFamily: "inherit" }}>Upgrade to Premium</button>}
-    </div>
-    <div style={{ padding: "16px 20px 0" }}>
-      <button onClick={() => nav("redeem")} style={{ width: "100%", background: isPremium ? C.successLight : C.goldLight, border: `1.5px solid ${isPremium ? "#A7F3D0" : "#FDE68A"}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 16, boxSizing: "border-box" }}>
-        <div style={{ width: 38, height: 38, background: isPremium ? "#D1FAE5" : "#FEF3C7", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n="key" s={18} c={isPremium ? C.success : C.gold} /></div>
-        <div style={{ flex: 1, textAlign: "left" }}>
-          <div style={{ fontWeight: 700, fontSize: 14, color: isPremium ? C.success : C.gold }}>{isPremium ? "Redeem Another Code" : "Redeem QR Tag Code"}</div>
-          <div style={{ fontSize: 12, color: isPremium ? "#065F46" : "#92400E", marginTop: 2 }}>{isPremium ? "Stack more free Premium days" : "Got a tag pack? Enter code for free Premium"}</div>
-        </div>
-        <Ic n="chevron" s={16} c={isPremium ? C.success : C.gold} />
-      </button>
-      {[{ icon: "tag", label: "Get QR Tag Packs", sub: "Buy on Amazon — includes Premium", action: () => nav("gettags") }, { icon: "location", label: "My Locations", sub: "2 locations", action: () => {} }, { icon: "box", label: "My Containers", sub: "Manage all containers", action: () => {} }, { icon: "bell", label: "Notifications", sub: "Manage alerts", action: () => {} }, { icon: "info", label: "How Keepin Works", sub: "View instructions & tips", action: () => {} }].map((item, i) => (
-        <button key={i} onClick={item.action} style={{ background: "transparent", border: "none", borderBottom: `1px solid ${C.border}`, padding: "14px 0", width: "100%", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", boxSizing: "border-box" }}>
-          <div style={{ width: 38, height: 38, background: C.primaryLight, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n={item.icon} s={18} c={C.primary} /></div>
-          <div style={{ flex: 1, textAlign: "left" }}><div style={{ fontWeight: 600, fontSize: 14, color: C.text }}>{item.label}</div><div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{item.sub}</div></div>
-          <Ic n="chevron" s={16} c={C.sub} />
-        </button>
-      ))}
-      <button style={{ background: "none", border: "none", color: "#EF4444", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 24, fontFamily: "inherit" }}>Sign Out</button>
-    </div>
-  </div>
-);
-
-function App() {
-  const [screen, setScreen] = useState("onboarding");
-  const [isPremium, setIsPremium] = useState(false);
-  const [items, setItems] = useState([{ name: "Pen", emoji: "🖊️", container: "Book Box", location: "Home" }]);
-  const [containers, setContainers] = useState(["Book Box"]);
-  const nav = s => setScreen(s);
-  const tabs = [{ id: "home", icon: "home", label: "Home" }, { id: "organize", icon: "box", label: "Organise" }, { id: "search", icon: "search", label: "Find" }, { id: "profile", icon: "user", label: "Profile" }];
-  const showNav = screen !== "onboarding";
-
-  const renderScreen = () => {
-    switch (screen) {
-      case "onboarding": return <Onboarding onDone={() => nav("home")} />;
-      case "home": return <Home isPremium={isPremium} nav={nav} items={items} containers={containers} />;
-      case "organize": return <Organise nav={nav} isPremium={isPremium} containers={containers} setContainers={setContainers} items={items} setItems={setItems} />;
-      case "search": return <Search nav={nav} isPremium={isPremium} items={items} />;
-      case "profile": return <Profile nav={nav} isPremium={isPremium} setIsPremium={setIsPremium} />;
-      case "redeem": return <Redeem nav={nav} setIsPremium={setIsPremium} />;
-      case "unlock": return <Unlock nav={nav} setIsPremium={setIsPremium} />;
-      case "gettags": return <GetTags nav={nav} />;
-      case "ask": return (
-        <div style={{ padding: "40px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 60, marginBottom: 16 }}>🎙️</div>
-          <div style={{ fontWeight: 800, fontSize: 22, color: C.text, marginBottom: 10 }}>Ask Keepin</div>
-          <div style={{ color: C.sub, fontSize: 14, marginBottom: 28, lineHeight: 1.7 }}>Try: "Where are my winter clothes?" or "What's in Box 3?"</div>
-          <div style={{ background: C.primaryLight, borderRadius: 14, padding: 14, marginBottom: 24 }}>
-            <input placeholder="Ask anything about your items…" style={{ width: "100%", border: "none", background: "transparent", fontSize: 15, outline: "none", fontFamily: "inherit", color: C.text, boxSizing: "border-box" }} />
-          </div>
-          <button onClick={() => nav("home")} style={{ background: "none", border: "none", color: C.sub, cursor: "pointer", fontFamily: "inherit" }}>← Back</button>
-        </div>
-      );
-      default: return <Home isPremium={isPremium} nav={nav} items={items} containers={containers} />;
-    }
-  };
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#D1D5DB", display: "flex", justifyContent: "center", alignItems: "flex-start", padding: 24, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
-      <div style={{ width: 375, background: C.bg, borderRadius: 44, overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.25)", position: "relative" }}>
-        <div style={{ background: "transparent", padding: "12px 28px 0", display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 600, color: C.text }}>
-          <span>9:41</span><span>▲ ● ●</span>
-        </div>
-        <div style={{ height: showNav ? 640 : 720, overflowY: "auto" }}>
-          {renderScreen()}
-        </div>
-        {showNav && (
-          <div style={{ background: C.white, borderTop: `1px solid ${C.border}`, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", padding: "10px 0 18px" }}>
-            {tabs.map(t => {
-              const active = screen === t.id;
-              return (
-                <button key={t.id} onClick={() => nav(t.id)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-                  <div style={{ width: 40, height: 32, background: active ? C.primaryLight : "transparent", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n={t.icon} s={20} c={active ? C.primary : C.sub} /></div>
-                  <span style={{ fontSize: 11, color: active ? C.primary : C.sub, fontWeight: active ? 700 : 400 }}>{t.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
-</body>
-</html>
+// ── PREMIUM GATE (req #4) ──────────────────────────────────
+function PremiumGate({ feature, desc, onInstructions, onCode, onPremium, onDismiss }) {
+  const unlocks = [
+    { icon:"sparkle", label:"AI item recognition", desc:"Auto-identifies items from photos" },
+    { icon:"edit",    label:"Smart descriptions",  desc:"AI writes item descriptions for you" },
+    { icon:"search",  label:"Contextual search",   desc:"Search by occasion, weather, purpose" },
+    { icon:"mic",     label:"AI assistant",        desc:"Ask anything about your inventory" },
+  ];
+  return (
+    <div style={{ position:"absolute", inset:0, background:"rgba(42,31,46,0.5)", display:"flex", alignItems:"flex-end", zIndex:200 }}>
+      <div style={{ background:T.surface, borderRadius:"24px 24px 0 0", padding:"24px 20px 36px", width:"100%", boxSizing:"border-box", maxHeight:"85%", overflowY:"auto" }}>
+        <div style={{ width:40, height:4, background:T.border, borderRadius:4, margin:"0 auto 20px" }}/>
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+          <div style={{ width:36, height:36, background:T.lavBg, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <Ic n="lock" s={17} c={T.lav} />
+          </div>
+          <div>
+            <div style={{ fontWeight:700, fontSize:15, color:T.ink, fontFamily:font }}>{feature} is a Premium feature</div>
+            <div style={{ fontSize:12, color:T.ink2, fontFamily:font, marginTop:2 }}>{desc}</div>
+          </div>
+        </div>
+        <div style={{ background:T.s2, borderRadius:14, padding:"14px 16px", margin:"16px 0" }}>
+          <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:12 }}>Premium unlocks</div>
+          {unlocks.map(function(u, i) {
+            return (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:i<unlocks.length-1?10:0 }}>
+                <div style={{ width:28, height:28, background:T.surface, borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  <Ic n={u.icon} s={14} c={T.brand} />
+                </div>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:600, color:T.ink, fontFamily:font }}>{u.label}</div>
+                  <div style={{ fontSize:11, color:T.ink3, fontFamily:font }}>{u.desc}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+          <Btn full label="Activation instructions →" onClick={onInstructions} />
+          <Btn full label="I already have a code" onClick={onCode} variant="outline" />
+          <Btn full label={"Continue Premium — $4.99/mo"} onClick={onPremium} variant="parch" />
+          <button onClick={onDismiss} style={{ background:"none", border:"none", color:T.ink3, fontSize:13, cursor:"pointer", fontFamily:font, padding:"6px 0" }}>Not now</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ACTIVATION INSTRUCTIONS (req #2 — 5 steps) ─────────────
+function ActivationInstructions({ nav, onFinish }) {
+  const [step, setStep] = useState(0);
+  const steps = [
+    {
+      title: "Create your free account",
+      desc: "Download the Keepin app and log in before scanning any tag. Your inventory is private to your account.",
+      tip: "Already have an account? Just make sure you're signed in before scanning.",
+      visual: (
+        <div style={{ background:grad, borderRadius:16, padding:24, textAlign:"center" }}>
+          <div style={{ width:56, height:56, background:"rgba(255,255,255,0.8)", borderRadius:18, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 12px" }}>
+            <Ic n="user" s={28} c={T.brand} />
+          </div>
+          <div style={{ fontWeight:700, fontSize:14, color:T.ink, fontFamily:font }}>Sign in to Keepin</div>
+          <div style={{ fontSize:12, color:T.ink2, fontFamily:font, marginTop:4 }}>Free · No credit card needed</div>
+        </div>
+      ),
+    },
+    {
+      title: "Place your QR tag on a container",
+      desc: "Peel and stick a Keepin tag on any box, shelf, or drawer. Open the app and scan it — a unique tracked location is created instantly.",
+      tip: "Locations are private to your account unless you choose to share them.",
+      visual: (
+        <div style={{ background:T.s2, borderRadius:16, padding:20, display:"flex", alignItems:"center", gap:16 }}>
+          <div style={{ width:52, height:52, background:T.surface, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, border:"1.5px solid "+T.border }}>
+            <Ic n="scan" s={26} c={T.brand} />
+          </div>
+          <div>
+            <div style={{ fontWeight:700, fontSize:13, color:T.ink, fontFamily:font }}>Scan QR tag</div>
+            <div style={{ fontSize:12, color:T.ink2, fontFamily:font, marginTop:3, lineHeight:1.5 }}>Box → tag → scan → location created</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Add items to that location",
+      desc: "After scanning, take photos of what's inside. You can add items manually for free, or use AI to auto-identify them with Premium.",
+      tip: "All items you add stay in your account forever — even if your Premium trial ends.",
+      visual: (
+        <div style={{ background:T.s2, borderRadius:16, padding:16, display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+          <div style={{ background:T.surface, borderRadius:12, padding:"12px 10px", textAlign:"center", border:"1px solid "+T.border }}>
+            <Ic n="edit" s={20} c={T.ink2} />
+            <div style={{ fontSize:11, fontWeight:600, color:T.ink, fontFamily:font, marginTop:6 }}>Manual entry</div>
+            <div style={{ fontSize:10, color:T.green, fontFamily:font, marginTop:3 }}>Always free</div>
+          </div>
+          <div style={{ background:T.lavBg, borderRadius:12, padding:"12px 10px", textAlign:"center", border:"1px solid #DDD0E8" }}>
+            <Ic n="sparkle" s={20} c={T.lav} />
+            <div style={{ fontSize:11, fontWeight:600, color:T.ink, fontFamily:font, marginTop:6 }}>AI Identify</div>
+            <div style={{ fontSize:10, color:T.lav, fontFamily:font, marginTop:3 }}>Premium</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Activate your free Premium week",
+      desc: "Each tag pack includes a code for one free week of Premium. To use it, visit keepin.ai in your browser — this opens outside the app.",
+      tip: "This step happens in your web browser, not inside the app — this is required by Apple.",
+      visual: (
+        <div style={{ background:"#1A1814", borderRadius:16, padding:20 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+            <div style={{ width:8, height:8, background:T.brand, borderRadius:"50%" }}/>
+            <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", fontFamily:font }}>keepin.ai/activate</div>
+            <div style={{ marginLeft:"auto" }}><Ic n="external" s={14} c="rgba(255,255,255,0.4)" /></div>
+          </div>
+          <div style={{ background:"rgba(255,255,255,0.07)", borderRadius:10, padding:14 }}>
+            <div style={{ fontSize:13, fontWeight:700, color:"#fff", fontFamily:font, marginBottom:8 }}>Enter your Premium code</div>
+            <div style={{ background:"rgba(255,255,255,0.12)", borderRadius:8, padding:"10px 12px", fontSize:14, color:"rgba(255,255,255,0.6)", fontFamily:"monospace", letterSpacing:3 }}>M8R2 T1LX</div>
+            <div style={{ background:T.brand, borderRadius:8, padding:"10px", textAlign:"center", marginTop:10, fontSize:13, fontWeight:600, color:"#fff", fontFamily:font }}>Activate Premium Code</div>
+          </div>
+          <div style={{ fontSize:11, color:"rgba(255,255,255,0.35)", fontFamily:font, marginTop:10, textAlign:"center" }}>Opens in Safari / Chrome</div>
+        </div>
+      ),
+    },
+    {
+      title: "After your trial ends",
+      desc: "Your tags and inventory stay fully functional. Here's exactly what's free forever vs what needs Premium.",
+      tip: "Codes from multiple packs can be stacked. Continuing costs $4.99/month or $50/year.",
+      visual: (
+        <div style={{ background:T.s2, borderRadius:16, padding:16 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+            <div style={{ background:T.greenBg, borderRadius:10, padding:12, border:"1px solid #C0DCCC" }}>
+              <div style={{ fontSize:10, fontWeight:700, color:T.green, fontFamily:font, letterSpacing:0.6, textTransform:"uppercase", marginBottom:8 }}>Always free</div>
+              {["Scan tags","Create locations","Manual entry","Keyword search"].map(function(f, i) {
+                return (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:6, marginBottom:5 }}>
+                    <Ic n="check" s={12} c={T.green} />
+                    <span style={{ fontSize:11, color:T.ink, fontFamily:font }}>{f}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ background:T.lavBg, borderRadius:10, padding:12, border:"1px solid #DDD0E8" }}>
+              <div style={{ fontSize:10, fontWeight:700, color:T.lav, fontFamily:font, letterSpacing:0.6, textTransform:"uppercase", marginBottom:8 }}>Premium</div>
+              {["AI recognition","Smart descriptions","Contextual search","AI assistant"].map(function(f, i) {
+                return (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:6, marginBottom:5 }}>
+                    <Ic n="sparkle" s={12} c={T.lav} />
+                    <span style={{ fontSize:11, color:T.ink, fontFamily:font }}>{f}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ marginTop:12, background:T.surface, borderRadius:10, padding:"10px 12px", border:"1px solid "+T.border }}>
+            <div style={{ fontSize:12, color:T.ink2, fontFamily:font }}>Stacking: Buy more tag packs → get more Premium weeks. Continue at <strong>$4.99/mo</strong> or <strong>$50/yr</strong>.</div>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  const isLast = step === steps.length - 1;
+  const s = steps[step];
+
+  function goNext() {
+    if (isLast) {
+      onFinish();
+    } else {
+      setStep(step + 1);
+    }
+  }
+
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:grad, padding:"16px 20px 14px", display:"flex", alignItems:"center", gap:12 }}>
+        {step > 0 && (
+          <button onClick={function(){ setStep(step-1); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer" }}>
+            <Ic n="back" s={17} c={T.ink} />
+          </button>
+        )}
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:11, fontWeight:700, color:T.ink3, fontFamily:font, letterSpacing:0.5 }}>Step {step+1} of {steps.length}</div>
+          <div style={{ display:"flex", gap:4, marginTop:6 }}>
+            {steps.map(function(_, i) {
+              return <div key={i} style={{ flex:1, height:3, borderRadius:3, background:i<=step?T.brand:"rgba(232,100,90,0.2)", transition:"background 0.3s" }}/>;
+            })}
+          </div>
+        </div>
+        <button onClick={function(){ nav("home"); }} style={{ background:"none", border:"none", color:T.ink3, fontSize:13, cursor:"pointer", fontFamily:font }}>Skip</button>
+      </div>
+
+      <div style={{ flex:1, overflowY:"auto", padding:"20px 20px 0" }}>
+        <div style={{ marginBottom:18 }}>{s.visual}</div>
+        <div style={{ fontWeight:800, fontSize:20, color:T.ink, fontFamily:font, letterSpacing:-0.4, marginBottom:8 }}>{s.title}</div>
+        <div style={{ fontSize:14, color:T.ink2, fontFamily:font, lineHeight:1.7, marginBottom:12 }}>{s.desc}</div>
+        <div style={{ background:T.goldBg, border:"1px solid "+T.amberBorder, borderRadius:12, padding:"10px 14px", display:"flex", gap:8 }}>
+          <Ic n="info" s={16} c={T.amber} />
+          <div style={{ fontSize:12, color:T.amber, fontFamily:font, lineHeight:1.5 }}>{s.tip}</div>
+        </div>
+      </div>
+
+      <div style={{ padding:"16px 20px 32px" }}>
+        <Btn full label={isLast ? "Enter my code →" : "Next →"} onClick={goNext} />
+      </div>
+    </div>
+  );
+}
+
+// ── EXTERNAL REDEEM (req #3) ───────────────────────────────
+function ExternalRedeem({ nav, setIsPremium }) {
+  const [code, setCode] = useState("");
+  const [done, setDone] = useState(false);
+
+  function handleActivate() {
+    if (code.length >= 4) {
+      setIsPremium(true);
+      setDone(true);
+    }
+  }
+
+  if (done) {
+    const unlocks = ["AI item recognition","Smart descriptions","Contextual search","AI assistant"];
+    return (
+      <div style={{ height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"40px 24px", textAlign:"center", background:grad }}>
+        <div style={{ width:68, height:68, background:T.greenBg, borderRadius:22, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:20 }}>
+          <Ic n="check" s={30} c={T.green} w={2} />
+        </div>
+        <div style={{ fontWeight:800, fontSize:22, color:T.ink, fontFamily:font, marginBottom:6 }}>Premium Activated!</div>
+        <div style={{ color:T.ink2, fontSize:14, lineHeight:1.7, fontFamily:font, marginBottom:20 }}>You now have 7 days of Premium. Here's what's unlocked:</div>
+        <div style={{ width:"100%", background:T.surface, borderRadius:16, padding:"16px 18px", marginBottom:28, border:"1px solid "+T.border }}>
+          {unlocks.map(function(u, i) {
+            return (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:i<unlocks.length-1?10:0 }}>
+                <div style={{ width:24, height:24, background:T.greenBg, borderRadius:7, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <Ic n="check" s={12} c={T.green} />
+                </div>
+                <span style={{ fontSize:14, fontWeight:500, color:T.ink, fontFamily:font }}>{u}</span>
+              </div>
+            );
+          })}
+        </div>
+        <Btn full label="Start organising" onClick={function(){ nav("home"); }} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding:"0 20px 100px" }}>
+      <TopBar title="Activation" onBack={function(){ nav("instructions"); }} noUser />
+      <div style={{ marginTop:20 }}>
+        <div style={{ background:"#1A1814", borderRadius:18, padding:"18px 16px", marginBottom:24, display:"flex", alignItems:"center", gap:10 }}>
+          <Ic n="external" s={18} c="rgba(255,255,255,0.5)" />
+          <div>
+            <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", fontFamily:font }}>keepin.ai/activate</div>
+            <div style={{ fontSize:11, color:"rgba(255,255,255,0.3)", fontFamily:font, marginTop:2 }}>This page is on our website, not in the app</div>
+          </div>
+        </div>
+        <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:10 }}>Your activation code</div>
+        <input
+          value={code}
+          onChange={function(e){ setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"")); }}
+          placeholder="M8R2 T1LX"
+          maxLength={8}
+          style={{ width:"100%", border:"2px solid "+(code?T.brand:T.border), borderRadius:14, padding:"16px 18px", fontSize:22, outline:"none", fontFamily:"monospace", color:T.ink, background:T.bg, boxSizing:"border-box", letterSpacing:6, textAlign:"center", marginBottom:8 }}
+        />
+        <div style={{ fontSize:12, color:T.ink3, fontFamily:font, marginBottom:6, textAlign:"center" }}>Enter the code from your tag pack card</div>
+        <div style={{ background:T.lavBg, border:"1px solid #DDD0E8", borderRadius:10, padding:"9px 13px", fontSize:12, color:T.lav, fontFamily:font, marginBottom:20, textAlign:"center" }}>
+          Have multiple packs? Codes can be stacked — each adds one more week.
+        </div>
+        <Btn full label="Activate Premium Code" onClick={handleActivate} variant={code.length>=4?"primary":"muted"} />
+        <div style={{ textAlign:"center", marginTop:18 }}>
+          <button style={{ background:"none", border:"none", color:T.brand, fontSize:13, cursor:"pointer", fontFamily:font }}>Buy Keepin tags on Amazon →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── HOME with persistent bottom bar (req #1) ───────────────
+function Home({ nav, isPremium, items, containers, processingReady, setProcessingReady }) {
+  const pending = items.filter(function(i){ return i.checkedOut; });
+  return (
+    <div style={{ paddingBottom:isPremium?100:160 }}>
+      <div style={{ background:grad, padding:"18px 20px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ fontWeight:800, fontSize:22, color:T.ink, fontFamily:font }}>keepin</span>
+          {isPremium && <span style={{ background:T.brand, color:"#fff", fontSize:9, fontWeight:700, padding:"2px 7px", borderRadius:20, fontFamily:font }}>PRO</span>}
+        </div>
+        <div style={{ display:"flex", gap:10 }}>
+          <button onClick={function(){ nav("notifications"); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer", position:"relative" }}>
+            <Ic n="bell" s={18} c={T.ink2} />
+            <div style={{ position:"absolute", top:4, right:4, width:8, height:8, background:T.brand, borderRadius:"50%", border:"1.5px solid #fff" }}/>
+          </button>
+          <button onClick={function(){ nav("account"); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer" }}>
+            <Ic n="user" s={18} c={T.ink2} />
+          </button>
+        </div>
+      </div>
+
+      <div style={{ padding:"16px 20px 0" }}>
+        {/* Req #6 — Persistent processing banner */}
+        {processingReady && (
+          <button onClick={function(){ setProcessingReady(false); }} style={{ width:"100%", background:T.amberBg, border:"1.5px solid "+T.amberBorder, borderRadius:14, padding:"12px 15px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", boxSizing:"border-box", marginBottom:14 }}>
+            <div style={{ width:34, height:34, background:"rgba(212,144,10,0.15)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <Ic n="sparkle" s={17} c={T.amber} />
+            </div>
+            <div style={{ flex:1, textAlign:"left" }}>
+              <div style={{ fontWeight:700, fontSize:13, color:T.amber, fontFamily:font }}>2 recordings ready to organise</div>
+              <div style={{ fontSize:11, color:"#A06E08", fontFamily:font, marginTop:2 }}>Tap to review your AI-identified items</div>
+            </div>
+            <Ic n="chev" s={16} c={T.amber} />
+          </button>
+        )}
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:18 }}>
+          <button onClick={function(){ nav("organise"); }} style={{ background:"linear-gradient(145deg,#FEF4F2,#FBF0EF)", border:"1px solid #F0D8D5", borderRadius:18, padding:"20px 16px", textAlign:"left", cursor:"pointer" }}>
+            <div style={{ width:38, height:38, background:"rgba(255,255,255,0.8)", borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:16 }}>
+              <Ic n="scan" s={20} c={T.brand} w={1.6} />
+            </div>
+            <div style={{ fontWeight:700, fontSize:15, color:T.ink, fontFamily:font }}>Organise</div>
+            <div style={{ fontSize:11, color:T.ink2, marginTop:3, fontFamily:font }}>Scan QR or add items</div>
+          </button>
+          <button onClick={function(){ nav("ask"); }} style={{ background:isPremium?"linear-gradient(145deg,#F7F0FB,#F2EAFA)":T.s2, border:isPremium?"1px solid #DDD0E8":"1px solid "+T.border, borderRadius:18, padding:"20px 16px", textAlign:"left", cursor:"pointer", position:"relative" }}>
+            {!isPremium && <div style={{ position:"absolute", top:10, right:10 }}><Ic n="lock" s={13} c={T.ink3} w={1.4}/></div>}
+            <div style={{ width:38, height:38, background:isPremium?"rgba(255,255,255,0.8)":T.surface, borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:16 }}>
+              <Ic n="mic" s={20} c={isPremium?T.lav:T.ink3} w={1.6} />
+            </div>
+            <div style={{ fontWeight:700, fontSize:15, color:isPremium?T.ink:T.ink2, fontFamily:font }}>Ask</div>
+            <div style={{ fontSize:11, color:isPremium?T.ink2:T.ink3, marginTop:3, fontFamily:font }}>{isPremium?"Ask where your things are":"Premium feature"}</div>
+          </button>
+        </div>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:20 }}>
+          {[{v:16,l:"Locations"},{v:containers.length,l:"Containers"},{v:items.length,l:"Items"}].map(function(stat) {
+            return (
+              <div key={stat.l} style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"12px 8px", textAlign:"center" }}>
+                <div style={{ fontWeight:800, fontSize:20, color:T.ink, fontFamily:font }}>{stat.v}</div>
+                <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:2 }}>{stat.l}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {pending.length > 0 && (
+          <div style={{ background:T.goldBg, border:"1px solid #EDD8B0", borderRadius:14, padding:"13px 15px", marginBottom:16 }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+              <div style={{ fontWeight:700, fontSize:13, color:T.gold, fontFamily:font }}>Pending return</div>
+              <button style={{ background:"none", border:"none", color:T.gold, fontSize:12, cursor:"pointer", fontFamily:font }}>View all →</button>
+            </div>
+            {pending.slice(0,2).map(function(it, i) {
+              return (
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:i<pending.length-1?8:0 }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:600, fontSize:13, color:T.ink, fontFamily:font }}>{it.name}</div>
+                    <div style={{ fontSize:11, color:T.ink3, fontFamily:font }}>{it.location} · {it.container}</div>
+                  </div>
+                  <span style={{ background:"rgba(232,184,106,0.25)", color:T.gold, fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:20, fontFamily:font }}>Checked out</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+          <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>Recently added</div>
+          <button onClick={function(){ nav("browse"); }} style={{ background:"none", border:"none", color:T.brand, fontSize:12, cursor:"pointer", fontFamily:font }}>View all →</button>
+        </div>
+        {items.slice(-3).reverse().map(function(it, i) {
+          return <ItemRow key={i} item={it} onPress={function(){ nav("item"); }} badge={it.checkedOut?"Out":null} />;
+        })}
+      </div>
+
+      {/* Req #1 — Persistent bottom bar for non-premium */}
+      {!isPremium && (
+        <div style={{ position:"fixed", bottom:64, left:"50%", transform:"translateX(-50%)", width:375, background:T.surface, borderTop:"1px solid "+T.border, padding:"10px 16px", display:"flex", gap:8, zIndex:50, boxSizing:"border-box" }}>
+          <button onClick={function(){ nav("instructions"); }} style={{ flex:1, background:"transparent", border:"1.5px solid "+T.brand, borderRadius:12, padding:"10px", fontWeight:600, fontSize:13, color:T.brand, cursor:"pointer", fontFamily:font }}>
+            Activation instructions
+          </button>
+          <button onClick={function(){ nav("premium"); }} style={{ flex:1, background:T.brand, border:"none", borderRadius:12, padding:"10px", fontWeight:600, fontSize:13, color:"#fff", cursor:"pointer", fontFamily:font }}>
+            Continue Premium
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ASK with premium gate ──────────────────────────────────
+function Ask({ nav, isPremium, items, setIsPremium }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState(null);
+  const [listening, setListening] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const [showGate, setShowGate] = useState(!isPremium);
+
+  const suggestions = [
+    "Where are my winter shoes?",
+    "I want to go hiking, what should I take?",
+    "Find the items I need for the beach",
+    "What clothes do I wear the least often?",
+    "Find my blue clothes",
+  ];
+  const mockResults = {
+    "Where are my winter shoes?": [
+      { name:"Olympic winter boots", location:"Storage Room", container:"Box #1", tags:"boots winter" },
+      { name:"Old boots", location:"Storage Room", container:"Box #3", tags:"forsale" },
+      { name:"Timberland boots", location:"Storage Room", container:"Box #3", tags:"timberland" },
+    ],
+    "I want to go hiking, what should I take?": [
+      { name:"Hiking boots", location:"Storage Room", container:"Box #1", tags:"boots hiking" },
+      { name:"Hiking backpack", location:"Storage Room", container:"Box #3", tags:"hiking" },
+      { name:"Water bottle", location:"Storage Room", container:"Box #3", tags:"hiking biking" },
+    ],
+    "Find the items I need for the beach": [
+      { name:"Sunglasses", location:"Storage Room", container:"Box #1", tags:"summer fashion" },
+      { name:"Beach umbrella", location:"Storage Room", container:"Box #3", tags:"beach" },
+      { name:"Sun cream", location:"Storage Room", container:"Box #3", tags:"beach" },
+    ],
+    "What clothes do I wear the least often?": [
+      { name:"Grey jeans", location:"Storage Room", container:"Box #1", tags:"clothes jeans" },
+      { name:"Navy cap", location:"Storage Room", container:"Box #3", tags:"clothes" },
+    ],
+    "Find my blue clothes": [
+      { name:"Blue shirt", location:"Storage Room", container:"Box #1", tags:"clothes shirts" },
+      { name:"Zara blue jeans", location:"Storage Room", container:"Box #3", tags:"jeans clothes" },
+    ],
+  };
+
+  function doAsk(q) {
+    const r = mockResults[q] || items.filter(function(it){ return it.name.toLowerCase().includes(q.toLowerCase()); });
+    setResults({ query:q, items:r });
+    setQuery("");
+    setSelected([]);
+  }
+  function toggleSel(idx) {
+    setSelected(function(p){ return p.includes(idx)?p.filter(function(x){return x!==idx;}):[...p,idx]; });
+  }
+
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column", position:"relative" }}>
+      <div style={{ background:grad, padding:"18px 20px 14px", display:"flex", alignItems:"center", gap:12 }}>
+        <button onClick={function(){ nav("home"); }} style={{ background:"rgba(255,255,255,0.7)", border:"none", borderRadius:10, padding:8, cursor:"pointer" }}><Ic n="back" s={17} c={T.ink}/></button>
+        <span style={{ fontWeight:700, fontSize:17, color:T.ink, fontFamily:font }}>Ask Keepin</span>
+      </div>
+      <div style={{ flex:1, overflowY:"auto", padding:"16px 20px" }}>
+        {results ? (
+          <div>
+            <div style={{ background:T.s2, borderRadius:14, padding:"10px 14px", marginBottom:14, display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+              <div style={{ fontSize:13, color:T.ink, fontFamily:font, fontStyle:"italic", flex:1 }}>"{results.query}"</div>
+              <div style={{ display:"flex", gap:8, marginLeft:10 }}>
+                <button onClick={function(){ setResults(null); }} style={{ background:"none", border:"none", color:T.brand, fontSize:12, cursor:"pointer", fontFamily:font }}>Edit</button>
+                <button onClick={function(){ doAsk(results.query); }} style={{ background:"none", border:"none", color:T.brand, fontSize:12, cursor:"pointer", fontFamily:font }}>Ask again</button>
+              </div>
+            </div>
+            {results.items.map(function(it, i) {
+              const isSel = selected.includes(i);
+              return (
+                <button key={i} onClick={function(){ toggleSel(i); }} style={{ width:"100%", background:isSel?T.lavBg:T.surface, border:"1.5px solid "+(isSel?T.lav:T.border), borderRadius:14, padding:"11px 14px", display:"flex", alignItems:"center", gap:12, marginBottom:8, cursor:"pointer", boxSizing:"border-box" }}>
+                  <div style={{ width:20, height:20, borderRadius:6, border:"2px solid "+(isSel?T.lav:T.border), background:isSel?T.lav:"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                    {isSel && <Ic n="check" s={12} c="#fff" />}
+                  </div>
+                  <div style={{ width:36, height:36, background:T.brandBg, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                    <Ic n="tag" s={15} c={T.brand} />
+                  </div>
+                  <div style={{ flex:1, textAlign:"left" }}>
+                    <div style={{ fontWeight:600, fontSize:13, color:T.ink, fontFamily:font }}>{it.name}</div>
+                    <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:1 }}>{it.location} · {it.container}</div>
+                    <div style={{ fontSize:10, color:T.lav, fontFamily:font, marginTop:1 }}>{it.tags}</div>
+                  </div>
+                </button>
+              );
+            })}
+            {selected.length > 0 && (
+              <div style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:16, padding:"14px 16px", marginTop:8 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:T.ink2, fontFamily:font, marginBottom:12 }}>{selected.length} selected</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+                  <button style={{ background:T.brand, color:"#fff", border:"none", borderRadius:10, padding:"10px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:font }}>Check out</button>
+                  <button style={{ background:T.s2, color:T.ink, border:"none", borderRadius:10, padding:"10px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:font }}>Donate</button>
+                  <button style={{ background:T.s2, color:T.ink, border:"none", borderRadius:10, padding:"10px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:font, gridColumn:"span 2" }}>Move to…</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {listening ? (
+              <div style={{ textAlign:"center", padding:"40px 0" }}>
+                <div style={{ width:72, height:72, background:T.brandBg, borderRadius:24, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
+                  <Ic n="mic" s={32} c={T.brand} />
+                </div>
+                <div style={{ fontWeight:700, fontSize:16, color:T.ink, fontFamily:font }}>Listening…</div>
+                <button onClick={function(){ setListening(false); }} style={{ background:"none", border:"none", color:T.brand, cursor:"pointer", fontFamily:font, marginTop:16, fontSize:13 }}>Cancel</button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:13, fontWeight:600, color:T.ink2, fontFamily:font, marginBottom:12 }}>Try asking:</div>
+                {suggestions.map(function(s, i) {
+                  return (
+                    <button key={i} onClick={function(){ doAsk(s); }} style={{ width:"100%", background:T.surface, border:"1px solid "+T.border, borderRadius:13, padding:"11px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8, cursor:"pointer", boxSizing:"border-box" }}>
+                      <span style={{ fontSize:13, color:T.ink, fontFamily:font, textAlign:"left" }}>{s}</span>
+                      <Ic n="chev" s={14} c={T.ink3} />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <div style={{ padding:"10px 16px 20px", borderTop:"1px solid "+T.border, display:"flex", gap:8, background:T.surface }}>
+        <div style={{ flex:1, display:"flex", alignItems:"center", background:T.s2, borderRadius:13, padding:"0 14px", gap:8, border:"1.5px solid "+(query?T.brand:T.border) }}>
+          <input value={query} onChange={function(e){ setQuery(e.target.value); }} onKeyDown={function(e){ if(e.key==="Enter"&&query) doAsk(query); }} placeholder="Type your prompt…" style={{ flex:1, border:"none", background:"transparent", fontSize:14, outline:"none", fontFamily:font, color:T.ink, padding:"11px 0" }} />
+        </div>
+        <button onClick={function(){ setListening(true); }} style={{ background:T.lavBg, border:"1px solid #DDD0E8", borderRadius:13, padding:"0 14px", cursor:"pointer" }}>
+          <Ic n="mic" s={18} c={T.lav} />
+        </button>
+        <button onClick={function(){ if(query) doAsk(query); }} style={{ background:T.brand, border:"none", borderRadius:13, padding:"0 14px", cursor:"pointer" }}>
+          <Ic n="chev" s={18} c="#fff" />
+        </button>
+      </div>
+
+      {/* Premium gate overlay */}
+      {showGate && (
+        <PremiumGate
+          feature="AI Assistant"
+          desc="Ask where your things are in plain language"
+          onInstructions={function(){ setShowGate(false); nav("instructions"); }}
+          onCode={function(){ setShowGate(false); nav("redeem"); }}
+          onPremium={function(){ setShowGate(false); nav("premium"); }}
+          onDismiss={function(){ setShowGate(false); nav("home"); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── ORGANISE ───────────────────────────────────────────────
+function Organise({ nav, containers, setContainers, isPremium, setIsPremium }) {
+  const [scanning, setScanning] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [showAIGate, setShowAIGate] = useState(false);
+
+  function startScan() {
+    setScanning(true);
+    setTimeout(function(){ setScanning(false); setRecording(true); }, 1500);
+  }
+  function stopRecording() { setRecording(false); setProcessing(true); }
+  function finishProcessing() { setProcessing(false); nav("home"); }
+
+  if (recording) {
+    return (
+      <div style={{ height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", background:"#1A1814", padding:24, textAlign:"center" }}>
+        <div style={{ width:80, height:80, background:"rgba(232,100,90,0.15)", borderRadius:24, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:24, border:"2px solid rgba(232,100,90,0.3)" }}>
+          <div style={{ width:20, height:20, background:T.brand, borderRadius:"50%" }}/>
+        </div>
+        <div style={{ color:"#fff", fontWeight:700, fontSize:18, fontFamily:font, marginBottom:8 }}>Recording…</div>
+        <div style={{ color:"rgba(255,255,255,0.5)", fontSize:13, fontFamily:font, marginBottom:32 }}>Storage Box #1</div>
+        <div style={{ color:"rgba(255,255,255,0.6)", fontSize:26, fontFamily:font, fontWeight:700 }}>00:00:12</div>
+        <button onClick={stopRecording} style={{ marginTop:32, background:"none", border:"2px solid rgba(255,255,255,0.2)", color:"#fff", borderRadius:14, padding:"13px 28px", fontWeight:600, fontSize:15, cursor:"pointer", fontFamily:font }}>Stop recording</button>
+      </div>
+    );
+  }
+  if (processing) {
+    return (
+      <div style={{ height:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 28px", textAlign:"center", background:grad }}>
+        <div style={{ width:72, height:72, background:"rgba(255,255,255,0.8)", borderRadius:24, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:24 }}>
+          <Ic n="sparkle" s={34} c={T.brand} w={1.3} />
+        </div>
+        <div style={{ fontWeight:800, fontSize:20, color:T.ink, fontFamily:font, marginBottom:10 }}>Keepin is doing its magic!</div>
+        <div style={{ color:T.ink2, fontSize:13, lineHeight:1.7, fontFamily:font, marginBottom:32 }}>The AI is processing your recording. You'll get a notification when it's ready.</div>
+        <Btn full label="Organise another container" onClick={function(){ setProcessing(false); }} />
+        <button onClick={finishProcessing} style={{ background:"none", border:"none", color:T.ink2, cursor:"pointer", fontFamily:font, fontSize:13, marginTop:16 }}>I'm done</button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding:"0 20px 100px", position:"relative" }}>
+      <div style={{ background:grad, margin:"0 -20px", padding:"18px 20px 14px", marginBottom:4 }}>
+        <div style={{ fontWeight:800, fontSize:22, color:T.ink, letterSpacing:-0.4, fontFamily:font }}>Organise</div>
+        <div style={{ color:T.ink2, fontSize:13, marginTop:3, fontFamily:font }}>Scan a QR tag or create a container</div>
+      </div>
+      <div style={{ marginTop:20 }}>
+        <div style={{ background:"linear-gradient(145deg,#FEF4F2,#F7F0FB)", border:"1px solid #EDD8D5", borderRadius:18, padding:20, marginBottom:14 }}>
+          <div style={{ fontWeight:700, fontSize:15, color:T.ink, fontFamily:font, marginBottom:6 }}>Scan QR Tag</div>
+          <div style={{ fontSize:13, color:T.ink2, fontFamily:font, lineHeight:1.5, marginBottom:16 }}>Stick a Keepin tag on any box, then scan it to create a tracked container.</div>
+          {scanning ? (
+            <div style={{ background:"rgba(42,31,46,0.85)", borderRadius:14, height:120, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:14 }}>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ width:56, height:56, border:"2px solid rgba(232,100,90,0.6)", borderRadius:12, margin:"0 auto 10px" }}/>
+                <div style={{ color:"rgba(255,255,255,0.8)", fontSize:13, fontFamily:font }}>Scanning…</div>
+              </div>
+            </div>
+          ) : (
+            <Btn full label="Open Scanner" onClick={startScan} />
+          )}
+        </div>
+
+        {/* Add item section with AI Identify gate */}
+        <div style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:18, padding:18, marginBottom:14 }}>
+          <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font, marginBottom:14 }}>Add item to container</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <button onClick={function(){ if(!isPremium) setShowAIGate(true); }} style={{ background:isPremium?T.lavBg:T.s2, border:"1px solid "+(isPremium?"#DDD0E8":T.border), borderRadius:12, padding:"14px 10px", cursor:"pointer", textAlign:"center", position:"relative" }}>
+              {!isPremium && <div style={{ position:"absolute", top:7, right:7 }}><Ic n="lock" s={11} c={T.ink3}/></div>}
+              <div style={{ display:"flex", justifyContent:"center", marginBottom:7 }}><Ic n="sparkle" s={22} c={isPremium?T.lav:T.ink3}/></div>
+              <div style={{ fontWeight:600, fontSize:13, color:isPremium?T.lav:T.ink2, fontFamily:font }}>AI Identify</div>
+              <div style={{ fontSize:11, color:T.ink3, marginTop:3, fontFamily:font }}>Auto from photo</div>
+            </button>
+            <button style={{ background:T.s2, border:"1px solid "+T.border, borderRadius:12, padding:"14px 10px", cursor:"pointer", textAlign:"center" }}>
+              <div style={{ display:"flex", justifyContent:"center", marginBottom:7 }}><Ic n="edit" s={22} c={T.ink2}/></div>
+              <div style={{ fontWeight:600, fontSize:13, color:T.ink2, fontFamily:font }}>Type name</div>
+              <div style={{ fontSize:11, color:T.green, marginTop:3, fontFamily:font }}>Always free</div>
+            </button>
+          </div>
+        </div>
+
+        <button onClick={function(){ setContainers(function(p){ return [...p,{name:"Container "+(p.length+1),items:0}]; }); }} style={{ width:"100%", background:T.surface, border:"1.5px dashed "+T.border, borderRadius:16, padding:"16px 18px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", marginBottom:20, boxSizing:"border-box" }}>
+          <div style={{ width:36, height:36, background:T.s2, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}><Ic n="folder" s={18} c={T.ink2}/></div>
+          <div style={{ textAlign:"left" }}>
+            <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>Create digital container</div>
+            <div style={{ fontSize:12, color:T.ink3, fontFamily:font }}>No QR tag needed</div>
+          </div>
+        </button>
+
+        {containers.length > 0 && (
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:12 }}>Your containers</div>
+            {containers.map(function(c, i) {
+              return (
+                <div key={i} style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"13px 15px", display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
+                  <div style={{ width:38, height:38, background:T.brandBg, borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center" }}><Ic n="box" s={18} c={T.brand}/></div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>{c.name}</div>
+                    <div style={{ fontSize:12, color:T.ink3, fontFamily:font }}>{c.items||0} items</div>
+                  </div>
+                  <Ic n="chev" s={15} c={T.ink3}/>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {showAIGate && (
+        <PremiumGate
+          feature="AI Identify"
+          desc="Automatically detects and names items from your photo"
+          onInstructions={function(){ setShowAIGate(false); nav("instructions"); }}
+          onCode={function(){ setShowAIGate(false); nav("redeem"); }}
+          onPremium={function(){ setShowAIGate(false); nav("premium"); }}
+          onDismiss={function(){ setShowAIGate(false); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── BROWSE ─────────────────────────────────────────────────
+function Browse({ nav, items }) {
+  const [q, setQ] = useState("");
+  const [showF, setShowF] = useState(false);
+  const filtered = q ? items.filter(function(it){ return it.name.toLowerCase().includes(q.toLowerCase()); }) : items;
+  return (
+    <div style={{ padding:"0 0 100px" }}>
+      <div style={{ background:grad, padding:"18px 20px 14px" }}>
+        <div style={{ display:"flex", gap:8 }}>
+          <div style={{ flex:1, display:"flex", alignItems:"center", background:"rgba(255,255,255,0.8)", border:"1.5px solid "+(q?T.brand:T.border), borderRadius:13, padding:"0 14px", gap:8 }}>
+            <Ic n="search" s={16} c={T.ink3}/>
+            <input value={q} onChange={function(e){ setQ(e.target.value); }} placeholder="Search item…" style={{ flex:1, border:"none", background:"transparent", fontSize:14, outline:"none", fontFamily:font, color:T.ink, padding:"11px 0" }} />
+          </div>
+          <button onClick={function(){ setShowF(true); }} style={{ background:"rgba(255,255,255,0.8)", border:"1px solid "+T.border, borderRadius:13, padding:"0 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:6, fontWeight:600, fontSize:13, color:T.ink, fontFamily:font }}>
+            <Ic n="filter" s={15} c={T.ink2}/> Filters
+          </button>
+        </div>
+      </div>
+      <div style={{ padding:"14px 20px 0" }}>
+        <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:12 }}>
+          {q?(filtered.length+" result"+(filtered.length!==1?"s":"")):"All items"}
+        </div>
+        {filtered.map(function(it, i){ return <ItemRow key={i} item={it} onPress={function(){ nav("item"); }} badge={it.checkedOut?"Checked out":null}/>; })}
+      </div>
+      {showF && <BottomModal title="Filters" body="Filter by location, tags, or sort order." actions={[{label:"Apply",onClick:function(){ setShowF(false); }},{label:"Reset",onClick:function(){ setShowF(false); },variant:"ghost"}]}/>}
+    </div>
+  );
+}
+
+// ── ITEM DETAIL ────────────────────────────────────────────
+function ItemDetail({ nav }) {
+  const [showActions, setShowActions] = useState(false);
+  const [modal, setModal] = useState(null);
+  const it = { name:"PS5 Controller", location:"Storage Room", container:"Box #1", tags:"gaming ps5" };
+  const actions = [
+    { label:"Edit item", icon:"edit", danger:false },
+    { label:"Move item to…", icon:"move", danger:false },
+    { label:"Check out item", icon:"checkout", danger:false },
+    { label:"Donate item", icon:"donate", danger:false },
+    { label:"Remove item", icon:"trash", danger:true },
+  ];
+  function closeModal(){ setModal(null); }
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column", position:"relative" }}>
+      <TopBar title={it.container} onBack={function(){ nav("browse"); }} noUser/>
+      <div style={{ flex:1, overflowY:"auto", padding:"20px 20px 100px" }}>
+        <div style={{ background:T.brandBg, borderRadius:20, height:160, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:18 }}>
+          <Ic n="tag" s={56} c={T.brand} w={1.2}/>
+        </div>
+        <div style={{ fontWeight:800, fontSize:22, color:T.ink, fontFamily:font, marginBottom:4 }}>{it.name}</div>
+        <div style={{ fontSize:13, color:T.ink2, fontFamily:font, lineHeight:1.6, marginBottom:16 }}>Excepteur sint occaecat cupidatat non proident.</div>
+        <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:18 }}>
+          {it.tags.split(" ").map(function(t, i){ return <span key={i} style={{ background:T.lavBg, color:T.lav, border:"1px solid #DDD0E8", fontSize:12, padding:"4px 10px", borderRadius:20, fontFamily:font }}>{t}</span>; })}
+        </div>
+        <div style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"13px 15px", marginBottom:14 }}>
+          {[{l:"Location",v:it.location},{l:"Container",v:it.container},{l:"Added",v:"14/04/2024"}].map(function(r, i){
+            return <div key={i} style={{ display:"flex", justifyContent:"space-between", marginBottom:i<2?10:0 }}><div style={{ fontSize:12, color:T.ink3, fontFamily:font }}>{r.l}</div><div style={{ fontSize:13, fontWeight:600, color:T.ink, fontFamily:font }}>{r.v}</div></div>;
+          })}
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+          <Btn label="Check out" onClick={function(){ setModal("checkout"); }}/>
+          <Btn label="Donate" onClick={function(){ setModal("donate"); }} variant="outline"/>
+        </div>
+        <button onClick={function(){ setShowActions(true); }} style={{ width:"100%", background:T.s2, border:"1px solid "+T.border, borderRadius:12, padding:"12px", marginTop:10, display:"flex", alignItems:"center", justifyContent:"center", gap:6, cursor:"pointer", fontFamily:font, fontSize:13, fontWeight:600, color:T.ink2 }}>More actions</button>
+      </div>
+      {showActions && (
+        <div style={{ position:"absolute", inset:0, background:"rgba(42,31,46,0.45)", display:"flex", alignItems:"flex-end", zIndex:100 }}>
+          <div style={{ background:T.surface, borderRadius:"20px 20px 0 0", padding:"20px 20px 36px", width:"100%", boxSizing:"border-box" }}>
+            <div style={{ fontWeight:700, fontSize:16, color:T.ink, fontFamily:font, marginBottom:16 }}>Actions</div>
+            {actions.map(function(a, i){
+              return <button key={i} onClick={function(){ setShowActions(false); if(a.label==="Remove item") setModal("remove"); }} style={{ width:"100%", background:"transparent", border:"none", borderBottom:"1px solid "+T.border, padding:"13px 0", display:"flex", alignItems:"center", gap:12, cursor:"pointer", fontFamily:font }}><Ic n={a.icon} s={18} c={a.danger?T.red:T.ink2}/><span style={{ fontSize:14, fontWeight:500, color:a.danger?T.red:T.ink }}>{a.label}</span></button>;
+            })}
+          </div>
+        </div>
+      )}
+      {modal==="checkout" && <BottomModal title="Check out item" body="This item will be marked as checked out." actions={[{label:"Check out",onClick:closeModal},{label:"Cancel",onClick:closeModal,variant:"ghost"}]}/>}
+      {modal==="donate"   && <BottomModal title="Donate item" body="Mark this item for donation?" actions={[{label:"Yes, donate",onClick:closeModal},{label:"Cancel",onClick:closeModal,variant:"ghost"}]}/>}
+      {modal==="remove"   && <BottomModal title="Remove item" body="This cannot be undone." actions={[{label:"Yes, remove",onClick:function(){ setModal(null); nav("browse"); },variant:"danger"},{label:"Cancel",onClick:closeModal,variant:"ghost"}]}/>}
+    </div>
+  );
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────────────
+function Notifications({ nav }) {
+  const notifs = [
+    { title:"Are you still using \"Ukulele\"?", body:"Don't forget to put it back.", action:"Return item", highlight:true },
+    { title:"Recording processed", body:"Storage box 1 is ready to organise.", action:"Organise", highlight:false },
+    { title:"Checked-out reminder", body:"Water bottle, Flashlight — 3 days ago.", action:"Return", highlight:false },
+    { title:"New item catalogued", body:"PS5 Controller added to Box #1.", action:null, highlight:false },
+  ];
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column" }}>
+      <TopBar title="Notifications" onBack={function(){ nav("home"); }} noUser/>
+      <div style={{ flex:1, overflowY:"auto", padding:"14px 20px" }}>
+        {notifs.map(function(n, i){
+          return (
+            <div key={i} style={{ background:n.highlight?T.goldBg:T.surface, border:"1px solid "+(n.highlight?"#EDD8B0":T.border), borderRadius:14, padding:"13px 15px", marginBottom:10 }}>
+              <div style={{ fontWeight:700, fontSize:14, color:T.ink, fontFamily:font, marginBottom:4 }}>{n.title}</div>
+              <div style={{ fontSize:12, color:T.ink2, fontFamily:font, lineHeight:1.5, marginBottom:n.action?10:0 }}>{n.body}</div>
+              {n.action && <button style={{ background:n.highlight?T.gold:T.brand, color:"#fff", border:"none", borderRadius:9, padding:"7px 14px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:font }}>{n.action}</button>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── ACCOUNT ────────────────────────────────────────────────
+function Account({ nav, isPremium }) {
+  const rows = [
+    { icon:"edit",     label:"Edit account",             sub:"Update profile & password",  action:"account" },
+    { icon:"location", label:"Locations",                sub:"2 locations",                action:null },
+    { icon:"tag",      label:"Tags",                     sub:"Manage item tags",            action:null },
+    { icon:"bell",     label:"Notifications",            sub:"Set preferences",             action:null },
+    { icon:"settings", label:"Settings",                 sub:"AI toggles, save prompt…",   action:"settings" },
+    { icon:"info",     label:"About",                    sub:"FAQ, Privacy, Terms",         action:null },
+    { icon:"packages", label:"Get QR Tags",              sub:"Buy on Amazon",               action:"gettags" },
+    { icon:"key",      label:"Activation instructions",  sub:"Set up your tag pack",        action:"instructions" },
+  ];
+  return (
+    <div style={{ padding:"0 0 100px" }}>
+      <div style={{ background:grad, padding:"28px 22px 22px" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:16 }}>
+          <div style={{ width:52, height:52, background:"rgba(255,255,255,0.75)", borderRadius:18, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <Ic n="user" s={24} c={T.brand}/>
+          </div>
+          <div>
+            <div style={{ fontWeight:800, fontSize:19, color:T.ink, fontFamily:font }}>Emily Stevenson</div>
+            <div style={{ color:T.ink3, fontSize:12, fontFamily:font, marginTop:2 }}>emily.stevenson@gmail.com</div>
+          </div>
+        </div>
+        {isPremium ? (
+          <div style={{ background:"rgba(255,255,255,0.75)", border:"1px solid #B8DEC8", borderRadius:12, padding:"9px 13px", display:"flex", alignItems:"center", gap:8 }}>
+            <Ic n="check" s={14} c={T.green}/><span style={{ fontSize:13, color:T.green, fontWeight:600, fontFamily:font }}>Premium active</span>
+          </div>
+        ) : (
+          <button onClick={function(){ nav("premium"); }} style={{ width:"100%", background:T.brand, color:"#fff", border:"none", borderRadius:12, padding:"11px", fontWeight:600, fontSize:14, cursor:"pointer", fontFamily:font }}>Continue Premium</button>
+        )}
+      </div>
+      <div style={{ padding:"12px 22px 0" }}>
+        {rows.map(function(r, i){
+          return (
+            <button key={i} onClick={function(){ if(r.action) nav(r.action); }} style={{ background:"transparent", border:"none", borderBottom:"1px solid "+T.border, padding:"13px 0", width:"100%", display:"flex", alignItems:"center", gap:12, cursor:"pointer", boxSizing:"border-box" }}>
+              <div style={{ width:34, height:34, background:T.s2, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}><Ic n={r.icon} s={16} c={T.ink2}/></div>
+              <div style={{ flex:1, textAlign:"left" }}>
+                <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>{r.label}</div>
+                <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:1 }}>{r.sub}</div>
+              </div>
+              <Ic n="chev" s={14} c={T.ink3}/>
+            </button>
+          );
+        })}
+        <button style={{ background:"none", border:"none", color:T.red, fontSize:13, fontWeight:500, cursor:"pointer", margin:"18px 0 0", fontFamily:font }}>Sign out</button>
+      </div>
+    </div>
+  );
+}
+
+// ── SETTINGS (req #5) ──────────────────────────────────────
+function Settings({ nav }) {
+  const [autoDesc, setAutoDesc] = useState(true);
+  const [autoTags, setAutoTags] = useState(true);
+  const [savePrompt, setSavePrompt] = useState(true);
+
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column" }}>
+      <TopBar title="Settings" onBack={function(){ nav("account"); }} noUser/>
+      <div style={{ flex:1, overflowY:"auto", padding:"16px 22px" }}>
+        <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:14 }}>AI Behaviour</div>
+
+        {[
+          { label:"Auto description", sub:"AI writes item descriptions when scanning", val:autoDesc, set:setAutoDesc },
+          { label:"Auto tags", sub:"AI suggests tags automatically for new items", val:autoTags, set:setAutoTags },
+        ].map(function(item, i) {
+          return (
+            <div key={i} style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"14px 16px", display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+              <div style={{ flex:1 }}>
+                <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>{item.label}</div>
+                <div style={{ fontSize:12, color:T.ink3, fontFamily:font, marginTop:2 }}>{item.sub}</div>
+                <div style={{ fontSize:11, color:item.val?T.lav:T.ink3, fontFamily:font, marginTop:3 }}>Premium feature · {item.val?"On — tap to disable":"Off — tap to enable"}</div>
+              </div>
+              <button onClick={function(){ item.set(!item.val); }} style={{ background:"none", border:"none", cursor:"pointer", padding:0 }}>
+                <Ic n={item.val?"toggle":"toggleoff"} s={36} c={item.val?T.lav:T.ink3} w={1.8}/>
+              </button>
+            </div>
+          );
+        })}
+
+        <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:14, marginTop:24 }}>Navigation</div>
+
+        <div style={{ background:T.surface, border:"1px solid "+T.border, borderRadius:14, padding:"14px 16px", display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+          <div style={{ flex:1 }}>
+            <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>Save before exit</div>
+            <div style={{ fontSize:12, color:T.ink3, fontFamily:font, marginTop:2 }}>Prompt to save when leaving an unsaved item review</div>
+          </div>
+          <button onClick={function(){ setSavePrompt(!savePrompt); }} style={{ background:"none", border:"none", cursor:"pointer", padding:0 }}>
+            <Ic n={savePrompt?"toggle":"toggleoff"} s={36} c={savePrompt?T.brand:T.ink3} w={1.8}/>
+          </button>
+        </div>
+
+        <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:14, marginTop:24 }}>Premium</div>
+
+        <button onClick={function(){ nav("instructions"); }} style={{ width:"100%", background:T.s2, border:"1px solid "+T.border, borderRadius:14, padding:"13px 15px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", marginBottom:10, boxSizing:"border-box" }}>
+          <div style={{ width:34, height:34, background:T.brandBg, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}><Ic n="key" s={16} c={T.brand}/></div>
+          <div style={{ flex:1, textAlign:"left" }}>
+            <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>Activation instructions</div>
+            <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:1 }}>Set up your QR tag pack</div>
+          </div>
+          <Ic n="chev" s={14} c={T.ink3}/>
+        </button>
+        <button onClick={function(){ nav("redeem"); }} style={{ width:"100%", background:T.s2, border:"1px solid "+T.border, borderRadius:14, padding:"13px 15px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", boxSizing:"border-box" }}>
+          <div style={{ width:34, height:34, background:T.lavBg, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}><Ic n="sparkle" s={16} c={T.lav}/></div>
+          <div style={{ flex:1, textAlign:"left" }}>
+            <div style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>I already have a code</div>
+            <div style={{ fontSize:11, color:T.ink3, fontFamily:font, marginTop:1 }}>Go to activation page</div>
+          </div>
+          <Ic n="chev" s={14} c={T.ink3}/>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── PREMIUM SCREEN ─────────────────────────────────────────
+function Premium({ nav, setIsPremium }) {
+  const plans = [
+    { p:"$12", l:"Basic",   sub:"No ads · Core features",              highlight:false },
+    { p:"$15", l:"Premium", sub:"AI recognition · Ask · Smart search", highlight:true  },
+    { p:"$20", l:"Deluxe",  sub:"Everything + priority support",       highlight:false },
+  ];
+  function selectPlan() { setIsPremium(true); nav("home"); }
+  return (
+    <div style={{ padding:"0 20px 100px" }}>
+      <TopBar title="Continue Premium" onBack={function(){ nav("account"); }} noUser/>
+      <div style={{ background:grad, border:"1px solid "+T.border, borderRadius:22, padding:"24px 20px", marginTop:16, marginBottom:24 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
+          <Ic n="sparkle" s={17} c={T.brand} w={1.4}/>
+          <span style={{ fontWeight:700, fontSize:11, color:T.brand, fontFamily:font, letterSpacing:0.8, textTransform:"uppercase" }}>keepin premium</span>
+        </div>
+        <div style={{ fontWeight:800, fontSize:20, color:T.ink, fontFamily:font, letterSpacing:-0.4, lineHeight:1.3, marginBottom:8 }}>Let AI handle the work. You just ask.</div>
+        <div style={{ color:T.ink2, fontSize:13, fontFamily:font, lineHeight:1.7 }}>AI item recognition, Ask, smart search by occasion, and more.</div>
+      </div>
+      {plans.map(function(pl, i){
+        return (
+          <button key={i} onClick={selectPlan} style={{ width:"100%", background:pl.highlight?T.brand:T.surface, border:"1.5px solid "+(pl.highlight?T.brand:T.border), borderRadius:14, padding:"15px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10, cursor:"pointer", boxSizing:"border-box" }}>
+            <div style={{ textAlign:"left" }}>
+              <div style={{ fontWeight:700, fontSize:15, color:pl.highlight?"#fff":T.ink, fontFamily:font }}>Keepin {pl.l}</div>
+              <div style={{ fontSize:11, color:pl.highlight?"rgba(255,255,255,0.7)":T.ink3, fontFamily:font, marginTop:2 }}>{pl.sub}</div>
+            </div>
+            <div style={{ fontWeight:800, fontSize:17, color:pl.highlight?"#fff":T.ink, fontFamily:font }}>
+              {pl.p}<span style={{ fontWeight:400, fontSize:12, opacity:0.6 }}>/mo</span>
+            </div>
+          </button>
+        );
+      })}
+      <div style={{ fontSize:11, color:T.ink3, fontFamily:font, textAlign:"center", marginTop:10, lineHeight:1.6 }}>14-day free trial · Cancel anytime</div>
+      <div style={{ textAlign:"center", marginTop:16 }}>
+        <button onClick={function(){ nav("instructions"); }} style={{ background:"none", border:"none", color:T.brand, fontSize:13, cursor:"pointer", fontFamily:font }}>Activation instructions →</button>
+      </div>
+    </div>
+  );
+}
+
+// ── GET TAGS ───────────────────────────────────────────────
+function GetTags({ nav }) {
+  const packs = [
+    { name:"Starter", qty:"10 Tags", price:"$19.99", bonus:"1 week Premium",  best:false },
+    { name:"Mover",   qty:"30 Tags", price:"$39.99", bonus:"3 weeks Premium", best:true  },
+    { name:"Home",    qty:"60 Tags", price:"$59.99", bonus:"6 weeks Premium", best:false },
+  ];
+  return (
+    <div style={{ padding:"0 20px 100px" }}>
+      <TopBar title="QR Tag Packs" onBack={function(){ nav("account"); }} noUser/>
+      <div style={{ marginTop:16 }}>
+        {packs.map(function(p, i){
+          return (
+            <div key={i} style={{ background:T.surface, border:(p.best?"1.5px":"1px")+" solid "+(p.best?T.brand:T.border), borderRadius:16, padding:16, marginBottom:12, position:"relative" }}>
+              {p.best && <div style={{ position:"absolute", top:-9, left:14, background:T.brand, color:"#fff", fontSize:10, fontWeight:700, padding:"3px 12px", borderRadius:20, fontFamily:font }}>Most popular</div>}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                <div>
+                  <div style={{ fontWeight:700, fontSize:15, color:T.ink, fontFamily:font }}>{p.name} Pack · {p.qty}</div>
+                  <div style={{ background:T.lavBg, border:"1px solid #DDD0E8", borderRadius:8, padding:"3px 9px", fontSize:11, color:T.lav, fontFamily:font, display:"inline-block", marginTop:5 }}>Includes {p.bonus}</div>
+                </div>
+                <div style={{ fontWeight:800, fontSize:17, color:T.ink, fontFamily:font }}>{p.price}</div>
+              </div>
+              <button style={{ width:"100%", background:p.best?T.brand:"transparent", color:p.best?"#fff":T.brand, border:"1.5px solid "+T.brand, borderRadius:11, padding:"11px", fontWeight:600, fontSize:14, cursor:"pointer", fontFamily:font }}>Buy on Amazon →</button>
+            </div>
+          );
+        })}
+        <button onClick={function(){ nav("instructions"); }} style={{ width:"100%", background:T.s2, border:"1px solid "+T.border, borderRadius:14, padding:"13px 16px", display:"flex", alignItems:"center", gap:12, cursor:"pointer", boxSizing:"border-box", marginTop:4 }}>
+          <Ic n="key" s={18} c={T.brand}/>
+          <span style={{ fontWeight:600, fontSize:14, color:T.ink, fontFamily:font }}>Activation instructions</span>
+          <Ic n="chev" s={14} c={T.ink3}/>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── SIGN IN ────────────────────────────────────────────────
+function SignIn({ nav }) {
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
+  return (
+    <div style={{ padding:"0 22px", height:"100%", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:grad, margin:"0 -22px", padding:"28px 22px 20px" }}>
+        <div style={{ fontWeight:800, fontSize:22, color:T.ink, fontFamily:font }}>Welcome back</div>
+        <div style={{ color:T.ink2, fontSize:13, fontFamily:font, marginTop:4 }}>Enter your log in info below.</div>
+      </div>
+      <div style={{ flex:1, paddingTop:24 }}>
+        <div style={{ marginBottom:16 }}>
+          <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:7 }}>Email address</div>
+          <input value={email} onChange={function(e){ setEmail(e.target.value); }} type="email" placeholder="Enter your email" style={{ width:"100%", border:"1.5px solid "+(email?T.brand:T.border), borderRadius:12, padding:"12px 14px", fontSize:14, outline:"none", fontFamily:font, color:T.ink, background:T.bg, boxSizing:"border-box" }}/>
+        </div>
+        <div style={{ marginBottom:8 }}>
+          <div style={{ fontSize:11, fontWeight:700, color:T.ink3, letterSpacing:0.8, textTransform:"uppercase", fontFamily:font, marginBottom:7 }}>Password</div>
+          <input value={pass} onChange={function(e){ setPass(e.target.value); }} type="password" placeholder="Enter your password" style={{ width:"100%", border:"1.5px solid "+(pass?T.brand:T.border), borderRadius:12, padding:"12px 14px", fontSize:14, outline:"none", fontFamily:font, color:T.ink, background:T.bg, boxSizing:"border-box" }}/>
+        </div>
+        <button style={{ background:"none", border:"none", color:T.brand, fontSize:13, cursor:"pointer", fontFamily:font, marginBottom:22 }}>Forgot password</button>
+        <Btn full label="Sign in" onClick={function(){ nav("home"); }}/>
+        <div style={{ display:"flex", alignItems:"center", gap:12, margin:"20px 0" }}>
+          <div style={{ flex:1, height:1, background:T.border }}/><span style={{ fontSize:12, color:T.ink3, fontFamily:font }}>OR</span><div style={{ flex:1, height:1, background:T.border }}/>
+        </div>
+        <button onClick={function(){ nav("home"); }} style={{ width:"100%", background:T.surface, border:"1px solid "+T.border, borderRadius:12, padding:"12px", fontWeight:600, fontSize:14, color:T.ink, cursor:"pointer", fontFamily:font, marginBottom:10 }}>Continue with Apple</button>
+        <button onClick={function(){ nav("home"); }} style={{ width:"100%", background:T.surface, border:"1px solid "+T.border, borderRadius:12, padding:"12px", fontWeight:600, fontSize:14, color:T.ink, cursor:"pointer", fontFamily:font }}>Continue with Google</button>
+      </div>
+    </div>
+  );
+}
+
+// ── ONBOARDING ─────────────────────────────────────────────
+function Onboarding({ onDone }) {
+  const [step, setStep] = useState(0);
+  const slides = [
+    { title:"Easy Identification", body:"Keepin identifies your items as you naturally put them away.", icon:"camera" },
+    { title:"Effortless Retrieval", body:"Ask Keepin where something is, and it quickly discovers your items.", icon:"mic" },
+    { title:"Quick & Seamless", body:"Optional QR and NFC tags efficiently track where your stuff is.", icon:"scan" },
+  ];
+  const s = slides[step];
+  function next() { step < slides.length-1 ? setStep(step+1) : onDone(); }
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column", background:grad }}>
+      <div style={{ display:"flex", gap:5, padding:"24px 24px 0", justifyContent:"center" }}>
+        {slides.map(function(_, i){ return <div key={i} style={{ height:3, width:i===step?24:7, borderRadius:3, background:i===step?T.brand:"rgba(232,100,90,0.2)", transition:"all 0.3s" }}/>; })}
+      </div>
+      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div style={{ width:110, height:110, background:"rgba(255,255,255,0.75)", borderRadius:30, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 24px rgba(232,100,90,0.12)" }}>
+          <Ic n={s.icon} s={48} c={T.brand} w={1.3}/>
+        </div>
+      </div>
+      <div style={{ padding:"0 28px 48px" }}>
+        <div style={{ fontWeight:800, fontSize:24, color:T.ink, lineHeight:1.25, letterSpacing:-0.5, marginBottom:12, fontFamily:font }}>{s.title}</div>
+        <div style={{ color:T.ink2, fontSize:15, lineHeight:1.7, marginBottom:32, fontFamily:font }}>{s.body}</div>
+        <Btn full label="Get started" onClick={next}/>
+        <button onClick={onDone} style={{ width:"100%", background:"none", border:"none", color:T.ink3, fontSize:13, cursor:"pointer", marginTop:14, fontFamily:font }}>Sign in</button>
+      </div>
+    </div>
+  );
+}
+
+// ── ROOT ───────────────────────────────────────────────────
+export default function App() {
+  const [screen, setScreen] = useState("onboarding");
+  const [isPremium, setIsPremium] = useState(false);
+  const [processingReady, setProcessingReady] = useState(true);
+  const [items] = useState([
+    { name:"PS5 Controller",      location:"Storage Room", container:"Box #1", tags:"gaming ps5",        checkedOut:false },
+    { name:"PS5 Controller Pink", location:"Storage Room", container:"Box #1", tags:"gaming ps5",        checkedOut:true  },
+    { name:"iPad Charger",        location:"Storage Room", container:"Box #1", tags:"apple",             checkedOut:false },
+    { name:"MagSafe Charger",     location:"Storage Room", container:"Box #1", tags:"apple accessories", checkedOut:false },
+    { name:"Logitech Mouse",      location:"Storage Room", container:"Box #1", tags:"computer",          checkedOut:false },
+  ]);
+  const [containers, setContainers] = useState([
+    { name:"Box #1", items:24 },
+    { name:"Box #2", items:12 },
+    { name:"Container #4", items:6 },
+  ]);
+
+  function nav(s) { setScreen(s); }
+
+  const mainScreens = ["home","organise","browse"];
+  const showNav = mainScreens.includes(screen);
+
+  function renderScreen() {
+    switch(screen) {
+      case "onboarding":   return <Onboarding onDone={function(){ nav("signin"); }}/>;
+      case "signin":       return <SignIn nav={nav}/>;
+      case "home":         return <Home nav={nav} isPremium={isPremium} items={items} containers={containers} processingReady={processingReady} setProcessingReady={setProcessingReady}/>;
+      case "ask":          return <Ask nav={nav} isPremium={isPremium} items={items} setIsPremium={setIsPremium}/>;
+      case "organise":     return <Organise nav={nav} containers={containers} setContainers={setContainers} isPremium={isPremium} setIsPremium={setIsPremium}/>;
+      case "browse":       return <Browse nav={nav} items={items}/>;
+      case "item":         return <ItemDetail nav={nav}/>;
+      case "notifications":return <Notifications nav={nav}/>;
+      case "account":      return <Account nav={nav} isPremium={isPremium}/>;
+      case "settings":     return <Settings nav={nav}/>;
+      case "premium":      return <Premium nav={nav} setIsPremium={setIsPremium}/>;
+      case "instructions": return <ActivationInstructions nav={nav} onFinish={function(){ nav("redeem"); }}/>;
+      case "redeem":       return <ExternalRedeem nav={nav} setIsPremium={setIsPremium}/>;
+      case "gettags":      return <GetTags nav={nav}/>;
+      default:             return <Home nav={nav} isPremium={isPremium} items={items} containers={containers} processingReady={processingReady} setProcessingReady={setProcessingReady}/>;
+    }
+  }
+
+  return (
+    <div style={{ minHeight:"100vh", background:"#E5DDE8", display:"flex", justifyContent:"center", alignItems:"flex-start", padding:24, fontFamily:font }}>
+      <div style={{ width:375, background:T.bg, borderRadius:46, overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)", position:"relative" }}>
+        <div style={{ background:grad, padding:"14px 28px 0", display:"flex", justifyContent:"space-between", fontSize:12, fontWeight:600, color:T.ink, fontFamily:font }}>
+          <span>9:41</span><span style={{ letterSpacing:1.5 }}>● ● ▲</span>
+        </div>
+        <div style={{ height:showNav?640:720, overflowY:"auto" }}>{renderScreen()}</div>
+        {showNav && <NavBar screen={screen} nav={nav}/>}
+      </div>
+    </div>
+  );
+}
